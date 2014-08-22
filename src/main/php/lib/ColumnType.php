@@ -5,7 +5,7 @@ class ColumnType {
 	 * @return ColumnType
 	 */
 	public static function integer() {
-		new ColumnType("int(11)");
+		return new ColumnType("int(11)");
 	}
 
 	private $sqlType;
