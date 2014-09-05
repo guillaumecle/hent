@@ -1,34 +1,45 @@
 <?php
-require_once '../../main/php/lib/Node.php';
-require_once '../../main/php/lib/Field.php';
-require_once '../../main/php/lib/BaseField.php';
-require_once '../../main/php/lib/ColumnType.php';
+require_once __DIR__ . '/../../main/php/lib/util.php';
+require_once __DIR__.'/../../main/php/lib/node/Node.php';
+require_once __DIR__.'/../../main/php/lib/InfoSchema/InfoSchemaRouter.php';
+require_once 'MyRouter.php';
+require_once 'Example.php';
 class Test extends PHPUnit_Framework_TestCase {
 
-    public function test() {
-		$e = new ExampleNode();
-		echo $e->getCreateScript();
+    public function testCreateScript() {
+		$n = new Node(new Example(new ExampleKey(null)));
+		//println($e->getCreateScript());
         $this->assertTrue(true);
     }
 
-}
-class ExampleNode extends Node {
-
-	/**
-	 * @return String
-	 */
-	public function getName() {
-		return "Example";
-	}
-	/**
-	 * @return Array
-	 */
-	public function getField() {
-		return [
-			new BaseField("id", ColumnType::integer()),
-			new BaseField("val", ColumnType::integer())
-		];
+	public function testPut() {
+		$mr = new MyRouter();
+		$data = new Example(new ExampleKey(time()), 'a');
+		$before = count($mr->exampleNode->all());
+		$mr->exampleNode->put($data);
+		$after = count($mr->exampleNode->all());
+		$this->assertEquals($before + 1, $after);
 	}
 
+	public function testGet() {
+		$mr = new MyRouter();
+		$id = "1409655640";
+		/**
+		 * @var $key ExampleKey
+		 */
+		$key = new ExampleKey(1409655640);
+		$d = $mr->exampleNode->get($key);
+		$this->assertNotNull($d);
+		$key = $d->getKey();
+		$this->assertEquals($id, $key->getI());
+	}
+
+	public function testInfoSchema() {
+		$r = new InfoSchemaRouter();
+		$mr = new MyRouter();
+//		$tab = $r->tables->all();
+//		var_dump(count($tab));
+		$d = $r->tables->get(new TablesKey($mr->getName(), $mr->exampleNode->getSqlName()));
+	}
 }
 

@@ -8,6 +8,13 @@ class ColumnType {
 		return new ColumnType("int(11)");
 	}
 
+	/**
+	 * @return ColumnType
+	 */
+	public static function string() {
+		return new ColumnType('varchar(255)');
+	}
+
 	private $sqlType;
 
 	/**
