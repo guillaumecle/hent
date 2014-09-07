@@ -21,13 +21,16 @@ class QueryBuilder {
 		$value = ' (';
 		$params = [];
 		$kIterator = new CachingIterator(new ArrayIterator($dataBean->getKey()->getFielder()->getFields($dataBean->getKey())));
+		$class = new ReflectionClass(get_class($dataBean->getKey()));
 		/**
 		 * @var $field Field
 		 */
 		foreach ($kIterator as $field) {
-			$sql .= '`'.$field->getSQLName().'`';
+			$sql .= $field->getEscapedSqlName();
 			$value .= '?';
-			$params[] = $field->getValue();
+			$prop = $class->getProperty($field->getName());
+			$prop->setAccessible(true);
+			$params[] = $prop->getValue($dataBean->getKey());
 			if ($kIterator->hasNext()) {
 				$sql .= ', ';
 				$value .= ', ';
@@ -39,9 +42,12 @@ class QueryBuilder {
 			$value .= ', ';
 		}
 		foreach ($dIterator as $field) {
-			$sql .= '`'.$field->getSQLName().'`';
+			$sql .= $field->getEscapedSqlName();
 			$value .= '?';
-			$params[] = $field->getValue();
+			$class = new ReflectionClass(get_class($dataBean));
+			$prop = $class->getProperty($field->getName());
+			$prop->setAccessible(true);
+			$params[] = $prop->getValue($dataBean->getKey());
 			if ($dIterator->hasNext()) {
 				$sql .= ', ';
 				$value .= ', ';
@@ -56,15 +62,34 @@ class QueryBuilder {
 	 * @return PreparedQuery
 	 */
 	public function getSelect(Key $key) {
-		$sql = 'select * from ' . $this->tableName . ' where ';
+		$sql = 'select * from ' . $this->tableName;
+		$pq = $this->getWhereClause($key);
+		return new PreparedQuery($pq->getData(), $sql . $pq->getSql());
+	}
+
+	public function getDelete($key) {
+		$sql = 'delete from ' . $this->tableName;
+		$pq = $this->getWhereClause($key);
+		return new PreparedQuery($pq->getData(), $sql . $pq->getSql());
+	}
+
+	/**
+	 * @param $fieldable Fieldable
+	 * @return PreparedQuery
+	 */
+	private function getWhereClause($fieldable) {
+		$sql = ' where ';
 		$params = [];
-		$iterator = new CachingIterator(new ArrayIterator($key->getFielder()->getFields($key)));
+		$iterator = new CachingIterator(new ArrayIterator($fieldable->getFielder()->getFields()));
+		$class = new ReflectionClass(get_class($fieldable));
 		/**
 		 * @var $field Field
 		 */
 		foreach ($iterator as $field) {
-			$sql .= '`'.$field->getSQLName() . '`=?';
-			$params[] = $field->getValue();
+			$sql .= $field->getEscapedSqlName() . '=?';
+			$prop = $class->getProperty($field->getName());
+			$prop->setAccessible(true);
+			$params[] = $prop->getValue($fieldable);
 			if ($iterator->hasNext()) {
 				$sql .= ' and ';
 			}

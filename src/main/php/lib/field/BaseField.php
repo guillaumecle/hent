@@ -5,14 +5,12 @@ class BaseField implements Field {
 	/**
 	 * @var string
 	 */
-	private $name;
+	private $fieldName;
 
 	/**
 	 * @var ColumnType
 	 */
 	private $type;
-
-	private $value;
 
 	/**
 	 * @var string
@@ -22,12 +20,10 @@ class BaseField implements Field {
 	/**
 	 * @param $name string
 	 * @param $type ColumnType
-	 * @param $value
 	 */
-	public function __construct($name, ColumnType $type, $value) {
-		$this->name = $name;
+	public function __construct($name, ColumnType $type) {
+		$this->fieldName = $name;
 		$this->type = $type;
-		$this->value = $value;
 		$this->sqlName = $name;
 	}
 
@@ -35,7 +31,7 @@ class BaseField implements Field {
 	 * @return String
 	 */
 	public function getName() {
-		return $this->name;
+		return $this->fieldName;
 	}
 
 	/**
@@ -45,6 +41,12 @@ class BaseField implements Field {
 		return $this->sqlName;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getEscapedSqlName() {
+		return '`' . $this->sqlName . '`';
+	}
 	/**
 	 * @param string $sqlName
 	 * @return $this BaseField
@@ -61,12 +63,8 @@ class BaseField implements Field {
 		return $this->type;
 	}
 
-	public function getValue() {
-		return $this->value;
-	}
-
 	public function __toString() {
-		return $this->name . ' (' . $this->type->getMySQLDeclaration() . ') : ' . $this->value;
+		return $this->fieldName . ' (' . $this->getEscapedSqlName() . ' ' . $this->type->getMySQLDeclaration() . ')';
 	}
 
 }

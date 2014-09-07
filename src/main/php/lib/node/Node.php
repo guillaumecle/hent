@@ -35,7 +35,7 @@ class Node {
 	/**
 	 * @return String
 	 */
-	private function getName() {
+	public function getName() {
 		return get_class($this->dataBean);
 	}
 
@@ -50,7 +50,7 @@ class Node {
 	 * @return String
 	 */
 	public function getSqlName() {
-		return strtolower($this->getName());
+		return '`' . strtolower($this->getName()) . '`';
 	}
 
 	/**
@@ -88,9 +88,7 @@ class Node {
 	 * @throws Exception
 	 */
 	public function get(Key $key) {
-		if (get_class($key) != get_class($this->getDataBean()->getKey())) {
-			throw new Exception("doesn't match key class");
-		}
+		$this->checkKey($key);
 		$pQuery = $this->builder->getSelect($key);
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());
@@ -113,7 +111,7 @@ class Node {
 			$fieldName = $field->getName();
 			$prop = $kClass->getProperty($fieldName);
 			$prop->setAccessible(true);
-			$prop->setValue($key, $rs[$field->getSQLName()]);
+			$prop->setValue($key, $rs[$field->getSqlName()]);
 		}
 
 		$d = $this->getDataBean();
@@ -127,8 +125,29 @@ class Node {
 			$fieldName = $field->getName();
 			$prop = $dClass->getProperty($fieldName);
 			$prop->setAccessible(true);
-			$prop->setValue($dataBean, $rs[$field->getSQLName()]);
+			$prop->setValue($dataBean, $rs[$field->getSqlName()]);
 		}
 		return $dataBean;
+	}
+
+	/**
+	 * @param $key Key
+	 */
+	public function delete(Key $key) {
+		$this->checkKey($key);
+		$pq = $this->builder->getDelete($key);
+		$ps = $this->co->prepare($pq->getSql());
+		$ps->execute($pq->getData());
+	}
+
+	/**
+	 * @param $key Key
+	 * @throws Exception
+	 */
+	private function checkKey(Key $key) {
+		if (get_class($key) != get_class($this->getDataBean()->getKey())) {
+			throw new Exception('Doesn\'t match key class (expected:' . get_class($this->getDataBean()->getKey()) . ', given: ' . get_class($key) . ')');
+		}
+
 	}
 }

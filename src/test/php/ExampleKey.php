@@ -24,13 +24,9 @@ class ExampleKey implements Key {
 }
 class KeyFielder implements Fielder {
 
-	/**
-	 * @var $key ExampleKey
-	 * @return Field[]
-	 */
-	public function getFields($key) {
+	public function getFields() {
 		return [
-			new BaseField('i', ColumnType::integer(), $key->getI())
+			new BaseField('i', ColumnType::integer())
 		];
 	}
 

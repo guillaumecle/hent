@@ -54,14 +54,10 @@ class TablesKey implements Key {
 }
 class TablesKeyFielder implements Fielder {
 
-	/**
-	 * @var $key TablesKey
-	 * @return Field[]
-	 */
-	public function getFields($key) {
+	public function getFields() {
 		return [
-			(new BaseField('name', ColumnType::string(), $key->getName()))->setSqlName('TABLE_NAME'),
-			(new BaseField('schema', ColumnType::string(), $key->getSchema()))->setSqlName('TABLE_SCHEMA')
+			(new BaseField('name', ColumnType::string()))->setSqlName('TABLE_NAME'),
+			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA')
 		];
 	}
 

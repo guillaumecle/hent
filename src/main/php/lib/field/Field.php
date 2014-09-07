@@ -6,14 +6,20 @@ interface Field {
 	 */
 	public function getName();
 
-	public function getSQLName();
+	/**
+	 * @return string
+	 */
+	public function getSqlName();
+
+	/**
+	 * @return string
+	 */
+	public function getEscapedSqlName();
 
 	/**
 	 * @return ColumnType
 	 */
 	public function getType();
-
-	public function getValue();
 
 }
 

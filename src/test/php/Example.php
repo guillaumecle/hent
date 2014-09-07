@@ -44,11 +44,7 @@ class Example implements DataBean {
 }
 class ExampleFielder implements  Fielder {
 
-	/**
-	 * @var $dataBean Example
-	 * @return Field[]
-	 */
-	public function getFields($dataBean) {
+	public function getFields() {
 		return [
 //			new BaseField('i', ColumnType::integer(), $dataBean->getId()),
 //			new BaseField('val', ColumnType::integer(), $dataBean->getVal())

@@ -12,13 +12,16 @@ class Test extends PHPUnit_Framework_TestCase {
         $this->assertTrue(true);
     }
 
-	public function testPut() {
+	public function testPutAndDelete() {
 		$mr = new MyRouter();
 		$data = new Example(new ExampleKey(time()), 'a');
 		$before = count($mr->exampleNode->all());
 		$mr->exampleNode->put($data);
 		$after = count($mr->exampleNode->all());
 		$this->assertEquals($before + 1, $after);
+		$mr->exampleNode->delete($data->getKey());
+		$after = count($mr->exampleNode->all());
+		$this->assertEquals($before, $after);
 	}
 
 	public function testGet() {
@@ -32,14 +35,26 @@ class Test extends PHPUnit_Framework_TestCase {
 		$this->assertNotNull($d);
 		$key = $d->getKey();
 		$this->assertEquals($id, $key->getI());
+
+		$key = new ExampleKey(12);
+		$d = $mr->exampleNode->get($key);
+		$this->assertNull($d);
 	}
 
 	public function testInfoSchema() {
 		$r = new InfoSchemaRouter();
 		$mr = new MyRouter();
-//		$tab = $r->tables->all();
-//		var_dump(count($tab));
-		$d = $r->tables->get(new TablesKey($mr->getName(), $mr->exampleNode->getSqlName()));
+		/**
+		 * @var $d Tables
+		 */
+		$d = $r->tables->get(new TablesKey($mr->getName(), $mr->exampleNode->getName()));
+		$this->assertNotNull($d);
+		$this->assertEquals('InnoDB', $d->getEngine());
+		/**
+		 * @var Columns
+		 */
+		$col = $r->columns->get(new ColumnsKey($mr->getName(), $mr->exampleNode->getName()));
+
 	}
 }
 

@@ -55,13 +55,9 @@ class Tables implements DataBean {
 }
 class TablesFielder implements Fielder {
 
-	/**
-	 * @var $d Tables
-	 * @return Field[]
-	 */
-	public function getFields($d) {
+	public function getFields() {
 		return [
-			(new BaseField('engine', ColumnType::string(), $d->getEngine()))->setSQLName('ENGINE')
+			(new BaseField('engine', ColumnType::string()))->setSQLName('ENGINE')
 		];
 	}
 

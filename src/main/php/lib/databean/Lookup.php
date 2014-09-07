@@ -1,5 +1,5 @@
 <?php
 require_once 'Fieldable.php';
-interface Key extends Fieldable {
+interface Lookup extends Fieldable {
 
 }

@@ -1,14 +1,10 @@
 <?php
-interface DataBean {
+require_once 'Fieldable.php';
+interface DataBean extends Fieldable {
 
 	/**
 	 * @return Key
 	 */
 	public function getKey();
-
-	/**
-	 * @return Fielder
-	 */
-	public function getFielder();
 
 }
