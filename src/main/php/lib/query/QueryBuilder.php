@@ -58,12 +58,12 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param $key Key
+	 * @param $fieldable Fieldable
 	 * @return PreparedQuery
 	 */
-	public function getSelect(Key $key) {
+	public function getSelect(Fieldable $fieldable) {
 		$sql = 'select * from ' . $this->tableName;
-		$pq = $this->getWhereClause($key);
+		$pq = $this->getWhereClause($fieldable);
 		return new PreparedQuery($pq->getData(), $sql . $pq->getSql());
 	}
 

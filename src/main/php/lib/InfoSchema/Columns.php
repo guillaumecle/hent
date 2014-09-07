@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../databean/DataBean.php';
 require_once __DIR__.'/../fielder/Fielder.php';
+require_once __DIR__.'/../databean/Lookup.php';
 require_once 'ColumnsKey.php';
 class Columns implements DataBean {
 
@@ -60,6 +61,59 @@ class ColumnsFielder implements Fielder {
 		return [
 			(new BaseField('columnName', ColumnType::string()))->setSqlName('COLUMN_NAME'),
 			(new BaseField('columnType', ColumnType::string()))->setSqlName('COLUMN_TYPE')
+		];
+	}
+
+}
+class ColumnsByTableNameLookup implements Lookup {
+
+	/**
+	 * @var string
+	 */
+	private $schema;
+
+	/**
+	 * @var string
+	 */
+	private $tableName;
+
+	/**
+	 * @param $schema string
+	 * @param $tableName string
+	 */
+	function __construct($schema, $tableName) {
+		$this->schema = $schema;
+		$this->tableName = $tableName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSchema() {
+		return $this->tableName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTableName() {
+		return $this->tableName;
+	}
+
+	/**
+	 * @return Fielder
+	 */
+	public function getFielder() {
+		return new ColumnsByTableNameLookupFielder();
+	}
+
+}
+class ColumnsByTableNameLookupFielder implements Fielder {
+
+	public function getFields() {
+		return [
+			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
+			(new BaseField('tableName', ColumnType::string()))->setSqlName('TABLE_NAME')
 		];
 	}
 

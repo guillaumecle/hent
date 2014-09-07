@@ -30,8 +30,8 @@ class ColumnsKey implements Key {
 	}
 
 	/**
-	 * @return string
-	 */
+* @return string
+*/
 	public function getTableName() {
 		return $this->tableName;
 	}

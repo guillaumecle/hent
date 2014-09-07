@@ -54,6 +54,12 @@ class Test extends PHPUnit_Framework_TestCase {
 		 * @var Columns
 		 */
 		$col = $r->columns->get(new ColumnsKey($mr->getName(), $mr->exampleNode->getName()));
+		$this->assertNotNull($col);
+
+		$lookup = new ColumnsByTableNameLookup($mr->getName(), $mr->exampleNode->getName());
+		$d = $r->columns->lookup($lookup);
+		$this->assertNotNull($d);
+		$this->assertEquals(1, count($d));
 
 	}
 }

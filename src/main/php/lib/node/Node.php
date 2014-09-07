@@ -99,6 +99,22 @@ class Node {
 	}
 
 	/**
+	 * @param Lookup $lookup
+	 * @return DataBean[]
+	 */
+	public function lookup(Lookup $lookup) {
+		$this->checkLookup($lookup);
+		$pQuery = $this->builder->getSelect($lookup);
+		$st = $this->co->prepare($pQuery->getSql());
+		$st->execute($pQuery->getData());
+		$res = [];
+		while ($rs = $st->fetch()) {
+			$res[] = $this->dataBeanFromResultSet($rs);
+		}
+		return $res;
+	}
+
+	/**
 	 * @param $rs
 	 * @return DataBean
 	 */
@@ -148,6 +164,12 @@ class Node {
 		if (get_class($key) != get_class($this->getDataBean()->getKey())) {
 			throw new Exception('Doesn\'t match key class (expected:' . get_class($this->getDataBean()->getKey()) . ', given: ' . get_class($key) . ')');
 		}
+	}
+
+	/**
+	 * @param $lookup Lookup
+	 */
+	private function checkLookup($lookup) {
 
 	}
 }
