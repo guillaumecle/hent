@@ -20,7 +20,7 @@ class QueryBuilder {
 		$sql = 'insert into ' . $this->tableName . ' (';
 		$value = ' (';
 		$params = [];
-		$kIterator = new CachingIterator(new ArrayIterator($dataBean->getKey()->getFields($dataBean->getKey())));
+		$kIterator = new CachingIterator(new ArrayIterator($dataBean->getKey()->getFields()));
 		$class = new ReflectionClass(get_class($dataBean->getKey()));
 		/**
 		 * @var $field Field
@@ -36,7 +36,8 @@ class QueryBuilder {
 				$value .= ', ';
 			}
 		}
-		$dIterator = new CachingIterator(new ArrayIterator($dataBean->getFields($dataBean)));
+		$dIterator = new CachingIterator(new ArrayIterator($dataBean->getFields()));
+		$class = new ReflectionClass(get_class($dataBean));
 		if ($dIterator->hasNext()) {
 			$sql .= ', ';
 			$value .= ', ';
@@ -44,10 +45,9 @@ class QueryBuilder {
 		foreach ($dIterator as $field) {
 			$sql .= $field->getEscapedSqlName();
 			$value .= '?';
-			$class = new ReflectionClass(get_class($dataBean));
 			$prop = $class->getProperty($field->getName());
 			$prop->setAccessible(true);
-			$params[] = $prop->getValue($dataBean->getKey());
+			$params[] = $prop->getValue($dataBean);
 			if ($dIterator->hasNext()) {
 				$sql .= ', ';
 				$value .= ', ';

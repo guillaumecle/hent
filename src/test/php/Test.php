@@ -16,7 +16,7 @@ class Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testPutAndDelete() {
-		$data = new Example(new ExampleKey(time()), 'a');
+		$data = new Example(new ExampleKey(time()), 1);
 		$before = count(self::$mr->exampleNode->all());
 		self::$mr->exampleNode->put($data);
 		$after = count(self::$mr->exampleNode->all());
@@ -61,7 +61,8 @@ class Test extends PHPUnit_Framework_TestCase {
 		$lookup = new ColumnsByTableLookup(self::$mr->getName(), self::$mr->exampleNode->getName());
 		$ds = $r->columns->lookup($lookup);
 		$this->assertNotNull($ds);
-		$this->assertEquals(2, count($ds));
+		$nb = count(self::$mr->exampleNode->getDataBean()->getFields()) + count(self::$mr->exampleNode->getDataBean()->getKey()->getFields());
+		$this->assertEquals($nb, count($ds));
 	}
 }
 

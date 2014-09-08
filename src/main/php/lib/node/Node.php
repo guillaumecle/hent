@@ -120,7 +120,7 @@ class Node {
 	 */
 	private function dataBeanFromResultSet($rs) {
 		$k = $this->getDataBean()->getKey();
-		$kFields = $k->getFields($k);
+		$kFields = $k->getFields();
 		$kClass = new ReflectionClass(get_class($k));
 		$key = $kClass->newInstanceWithoutConstructor();
 		foreach($kFields as $field) {
@@ -131,7 +131,7 @@ class Node {
 		}
 
 		$d = $this->getDataBean();
-		$dFields = $d->getFields($d);
+		$dFields = $d->getFields();
 		$dClass = new ReflectionClass(get_class($d));
 		$dataBean = $dClass->newInstanceWithoutConstructor();
 		$prop = $dClass->getProperty('key');
