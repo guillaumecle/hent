@@ -8,7 +8,7 @@ class MyRouter extends Router {
 	public $exampleNode;
 
 	public function __construct() {
-		$this->exampleNode = parent::registerNode(new Node(new Example(new ExampleKey(null))));
+		$this->exampleNode = parent::registerNode(new Node(new Example(new ExampleKey(null), null)));
 		parent::__construct('datamanagertest');
 	}
 

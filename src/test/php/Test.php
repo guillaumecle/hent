@@ -6,61 +6,62 @@ require_once 'MyRouter.php';
 require_once 'Example.php';
 class Test extends PHPUnit_Framework_TestCase {
 
-    public function testCreateScript() {
-		$n = new Node(new Example(new ExampleKey(null)));
-		//println($e->getCreateScript());
-        $this->assertTrue(true);
-    }
+	/**
+	 * @var MyRouter
+	 */
+	private static $mr;
+
+	public static function setUpBeforeClass() {
+		self::$mr = new MyRouter();
+	}
 
 	public function testPutAndDelete() {
-		$mr = new MyRouter();
 		$data = new Example(new ExampleKey(time()), 'a');
-		$before = count($mr->exampleNode->all());
-		$mr->exampleNode->put($data);
-		$after = count($mr->exampleNode->all());
+		$before = count(self::$mr->exampleNode->all());
+		self::$mr->exampleNode->put($data);
+		$after = count(self::$mr->exampleNode->all());
 		$this->assertEquals($before + 1, $after);
-		$mr->exampleNode->delete($data->getKey());
-		$after = count($mr->exampleNode->all());
+		self::$mr->exampleNode->delete($data->getKey());
+		$after = count(self::$mr->exampleNode->all());
 		$this->assertEquals($before, $after);
 	}
 
 	public function testGet() {
-		$mr = new MyRouter();
 		$id = "1409655640";
 		/**
 		 * @var $key ExampleKey
 		 */
 		$key = new ExampleKey(1409655640);
-		$d = $mr->exampleNode->get($key);
+		self::$mr->exampleNode->put(new Example($key, 5));
+		$d = self::$mr->exampleNode->get($key);
 		$this->assertNotNull($d);
 		$key = $d->getKey();
-		$this->assertEquals($id, $key->getI());
+		$this->assertEquals($id, $key->getId());
+		self::$mr->exampleNode->delete($key);
 
 		$key = new ExampleKey(12);
-		$d = $mr->exampleNode->get($key);
+		$d = self::$mr->exampleNode->get($key);
 		$this->assertNull($d);
 	}
 
 	public function testInfoSchema() {
 		$r = new InfoSchemaRouter();
-		$mr = new MyRouter();
 		/**
 		 * @var $d Tables
 		 */
-		$d = $r->tables->get(new TablesKey($mr->getName(), $mr->exampleNode->getName()));
+		$d = $r->tables->get(new TablesKey(self::$mr->getName(), self::$mr->exampleNode->getName()));
 		$this->assertNotNull($d);
 		$this->assertEquals('InnoDB', $d->getEngine());
 		/**
 		 * @var Columns
 		 */
-		$col = $r->columns->get(new ColumnsKey($mr->getName(), $mr->exampleNode->getName()));
-		$this->assertNotNull($col);
+//		$col = $r->columns->get(new ColumnsKey($mr->getName(), $mr->exampleNode->getName()));
+//		$this->assertNotNull($col);
 
-		$lookup = new ColumnsByTableNameLookup($mr->getName(), $mr->exampleNode->getName());
-		$d = $r->columns->lookup($lookup);
-		$this->assertNotNull($d);
-		$this->assertEquals(1, count($d));
-
+		$lookup = new ColumnsByTableLookup(self::$mr->getName(), self::$mr->exampleNode->getName());
+		$ds = $r->columns->lookup($lookup);
+		$this->assertNotNull($ds);
+		$this->assertEquals(2, count($ds));
 	}
 }
 

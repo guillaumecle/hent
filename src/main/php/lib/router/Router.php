@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../util.php';
+require_once __DIR__ . '/../SchemaUpdate/SchemaUpdater.php';
 abstract class Router {
 
 	/**
@@ -19,8 +20,9 @@ abstract class Router {
 
 	/**
 	 * @param $name String
+	 * @param $updateSchema boolean
 	 */
-	public function __construct($name) {
+	public function __construct($name, $updateSchema = true) {
 		$this->name = $name;
 		$PARAM_host = 'localhost';
 		$PARAM_port = '3306';
@@ -32,6 +34,10 @@ abstract class Router {
 		$this->connection = $co;
 		foreach ($this->nodes as $node) {
 			$node->setConnection($co);
+		}
+		if ($updateSchema) {
+			$su = new SchemaUpdater($this);
+			$su->updateSchema();
 		}
 	}
 
@@ -47,7 +53,7 @@ abstract class Router {
 	/**
 	 * @return PDO
 	 */
-	private function getConnection() {
+	public function getConnection() {
 		return $this->connection;
 	}
 
@@ -58,33 +64,11 @@ abstract class Router {
 		return $this->name;
 	}
 
-	private function doSchemaUpdate() {
-		$tablesQuery = $this->connection->prepare('select * from information_schema.tables where table_schema = \'' . $this->getName() . '\'');
-		$tablesQuery->execute();
-		$tables = [];
-		while ($table = $tablesQuery->fetch()) {
-			$tables[] = Node::fromInformationSchema($table);
-		}
-		foreach ($this->nodes as $node) {
-			if (in_array($node->getSqlName(), $tables)) {
-				$describeQuery = $this->connection->prepare('describe ' . $node->getSqlName());
-				$describeQuery->execute();
-				while ($describe = $describeQuery->fetch()) {
-					$describe = BaseField::fromDescribe($describe);
-				}
-			} else {
-				//$this->doCreate($node);
-			}
-		}
-	}
-
 	/**
-	 * @param $node Node
+	 * @return Node[]
 	 */
-	public function doCreate($node) {
-		println('Create Table:');
-		println($node->getCreateScript());
-		$this->connection->prepare($node->getCreateScript())->execute();
+	public function getNodes() {
+		return $this->nodes;
 	}
 
 }

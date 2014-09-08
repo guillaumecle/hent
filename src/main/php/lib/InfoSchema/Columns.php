@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__.'/../databean/DataBean.php';
-require_once __DIR__.'/../fielder/Fielder.php';
 require_once __DIR__.'/../databean/Lookup.php';
 require_once 'ColumnsKey.php';
 class Columns implements DataBean {
@@ -9,11 +8,6 @@ class Columns implements DataBean {
 	 * @var ColumnsKey
 	 */
 	private $key;
-
-	/**
-	 * @var string
-	 */
-	private $columnName;
 
 	/**
 	 * @var string
@@ -34,38 +28,22 @@ class Columns implements DataBean {
 	}
 
 	/**
-	 * @return Fielder
-	 */
-	public function getFielder() {
-		return new ColumnsFielder();
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getColumnName() {
-		return $this->columnName;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getColumnType() {
 		return $this->columnType;
 	}
 
-}
-class ColumnsFielder implements Fielder {
-
+	/**
+	 * @return Field[]
+	 */
 	public function getFields() {
 		return [
-			(new BaseField('columnName', ColumnType::string()))->setSqlName('COLUMN_NAME'),
 			(new BaseField('columnType', ColumnType::string()))->setSqlName('COLUMN_TYPE')
 		];
 	}
-
 }
-class ColumnsByTableNameLookup implements Lookup {
+class ColumnsByTableLookup implements Lookup {
 
 	/**
 	 * @var string
@@ -99,16 +77,6 @@ class ColumnsByTableNameLookup implements Lookup {
 	public function getTableName() {
 		return $this->tableName;
 	}
-
-	/**
-	 * @return Fielder
-	 */
-	public function getFielder() {
-		return new ColumnsByTableNameLookupFielder();
-	}
-
-}
-class ColumnsByTableNameLookupFielder implements Fielder {
 
 	public function getFields() {
 		return [

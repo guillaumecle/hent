@@ -2,13 +2,6 @@
 require_once __DIR__.'/../databean/DataBean.php';
 require_once __DIR__.'/../query/QueryBuilder.php';
 class Node {
-	/**
-	 * @param $array array
-	 * @return Node
-	 */
-	public static function fromInformationSchema($array) {
-		//return new BaseNode();
-	}
 
 	/**
 	 * @var PDO
@@ -47,10 +40,17 @@ class Node {
 	}
 
 	/**
-	 * @return String
+	 * @return string
+	 */
+	public function getEscapedSqlName() {
+		return '`' . strtolower($this->getName()) . '`';
+	}
+
+	/**
+	 * @return string
 	 */
 	public function getSqlName() {
-		return '`' . strtolower($this->getName()) . '`';
+		return strtolower($this->getName());
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Node {
 	 * @return DataBean[]
 	 */
 	public function all() {
-		$sql = 'select * from ' . $this->getSqlName();
+		$sql = 'select * from ' . $this->getEscapedSqlName();
 		$st = $this->co->query($sql);
 		$res = [];
 		while ($rs = $st->fetch()) {
@@ -120,7 +120,7 @@ class Node {
 	 */
 	private function dataBeanFromResultSet($rs) {
 		$k = $this->getDataBean()->getKey();
-		$kFields = $k->getFielder()->getFields($k);
+		$kFields = $k->getFields($k);
 		$kClass = new ReflectionClass(get_class($k));
 		$key = $kClass->newInstanceWithoutConstructor();
 		foreach($kFields as $field) {
@@ -131,7 +131,7 @@ class Node {
 		}
 
 		$d = $this->getDataBean();
-		$dFields = $d->getFielder()->getFields($d);
+		$dFields = $d->getFields($d);
 		$dClass = new ReflectionClass(get_class($d));
 		$dataBean = $dClass->newInstanceWithoutConstructor();
 		$prop = $dClass->getProperty('key');
@@ -172,4 +172,5 @@ class Node {
 	private function checkLookup($lookup) {
 
 	}
+
 }

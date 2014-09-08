@@ -2,8 +2,8 @@
 interface Fieldable {
 
 	/**
-	 * @return Fielder
+	 * @return Field[]
 	 */
-	public function getFielder();
+	public function getFields();
 
 }

@@ -1,32 +1,21 @@
 <?php
 require_once __DIR__.'/../../main/php/lib/databean/Key.php';
-require_once __DIR__.'/../../main/php/lib/fielder/Fielder.php';
 require_once __DIR__.'/../../main/php/lib/field/ColumnType.php';
 class ExampleKey implements Key {
 
-	private $i;
+	private $id;
 
-	public function __construct($i) {
-		$this->i = $i;
+	public function __construct($id) {
+		$this->id = $id;
 	}
 
-	/**
-	 * @return Fielder
-	 */
-	public function getFielder() {
-		return new KeyFielder();
+	public function getId() {
+		return $this->id;
 	}
-
-	public function getI() {
-		return $this->i;
-	}
-
-}
-class KeyFielder implements Fielder {
 
 	public function getFields() {
 		return [
-			new BaseField('i', ColumnType::integer())
+			new BaseField('id', ColumnType::integer())
 		];
 	}
 

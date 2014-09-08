@@ -18,8 +18,8 @@ class InfoSchemaRouter extends Router {
 
 	public function __construct() {
 		$this->tables = parent::registerNode(new Node(new Tables(new TablesKey(null, null), null)));
-		$this->columns = parent::registerNode(new Node(new Columns(new ColumnsKey(null, null))));
-		parent::__construct('information_schema');
+		$this->columns = parent::registerNode(new Node(new Columns(new ColumnsKey(null, null, null))));
+		parent::__construct('information_schema', false);
 	}
 
 }

@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__.'/../../main/php/lib/databean/DataBean.php';
-require_once __DIR__.'/../../main/php/lib/fielder/Fielder.php';
 require_once __DIR__.'/../../main/php/lib/field/BaseField.php';
 require_once __DIR__.'/../../main/php/lib/field/ColumnType.php';
 require_once 'ExampleKey.php';
@@ -18,10 +17,11 @@ class Example implements DataBean {
 
 	/**
 	 * @param $key ExampleKey
+	 * @param $val int
 	 */
-	public function __construct($key) {
+	public function __construct($key, $val) {
 		$this->key = $key;
-//		$this->val = $val;
+		$this->val = $val;
 	}
 
 	/**
@@ -30,25 +30,14 @@ class Example implements DataBean {
 	public function getKey() {
 		return $this->key;
 	}
-	/**
-	 * @return Fielder
-	 */
-	public function getFielder() {
-		return new ExampleFielder();
-	}
 
 	public function getVal() {
 		return $this->val;
 	}
 
-}
-class ExampleFielder implements  Fielder {
-
 	public function getFields() {
 		return [
-//			new BaseField('i', ColumnType::integer(), $dataBean->getId()),
-//			new BaseField('val', ColumnType::integer(), $dataBean->getVal())
+			new BaseField('val', ColumnType::integer())
 		];
 	}
-
 }

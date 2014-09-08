@@ -9,7 +9,7 @@ class QueryBuilder {
 	 * @param $node Node
 	 */
 	public function __construct($node) {
-		$this->tableName = $node->getSqlName();
+		$this->tableName = $node->getEscapedSqlName();
 	}
 
 	/**
@@ -20,7 +20,7 @@ class QueryBuilder {
 		$sql = 'insert into ' . $this->tableName . ' (';
 		$value = ' (';
 		$params = [];
-		$kIterator = new CachingIterator(new ArrayIterator($dataBean->getKey()->getFielder()->getFields($dataBean->getKey())));
+		$kIterator = new CachingIterator(new ArrayIterator($dataBean->getKey()->getFields($dataBean->getKey())));
 		$class = new ReflectionClass(get_class($dataBean->getKey()));
 		/**
 		 * @var $field Field
@@ -36,7 +36,7 @@ class QueryBuilder {
 				$value .= ', ';
 			}
 		}
-		$dIterator = new CachingIterator(new ArrayIterator($dataBean->getFielder()->getFields($dataBean)));
+		$dIterator = new CachingIterator(new ArrayIterator($dataBean->getFields($dataBean)));
 		if ($dIterator->hasNext()) {
 			$sql .= ', ';
 			$value .= ', ';
@@ -80,7 +80,7 @@ class QueryBuilder {
 	private function getWhereClause($fieldable) {
 		$sql = ' where ';
 		$params = [];
-		$iterator = new CachingIterator(new ArrayIterator($fieldable->getFielder()->getFields()));
+		$iterator = new CachingIterator(new ArrayIterator($fieldable->getFields()));
 		$class = new ReflectionClass(get_class($fieldable));
 		/**
 		 * @var $field Field

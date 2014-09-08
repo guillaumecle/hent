@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__.'/../databean/Key.php';
-require_once __DIR__.'/../fielder/Fielder.php';
 class ColumnsKey implements Key {
 
 	/**
@@ -14,12 +13,19 @@ class ColumnsKey implements Key {
 	private $tableName;
 
 	/**
+	 * @var string
+	 */
+	private $columnName;
+
+	/**
 	 * @param $schema string
 	 * @param $tableName string
+	 * @param $columnName string
 	 */
-	function __construct($schema, $tableName) {
+	function __construct($schema, $tableName, $columnName) {
 		$this->schema = $schema;
 		$this->tableName = $tableName;
+		$this->tableName = $columnName;
 	}
 
 	/**
@@ -30,26 +36,24 @@ class ColumnsKey implements Key {
 	}
 
 	/**
-* @return string
-*/
+	* @return string
+	*/
 	public function getTableName() {
 		return $this->tableName;
 	}
 
 	/**
-	 * @return ColumnsKeyFielder
+	 * @return string
 	 */
-	public function getFielder() {
-		return new ColumnsKeyFielder();
+	public function getColumnName() {
+		return $this->columnName;
 	}
-
-}
-class ColumnsKeyFielder implements Fielder {
 
 	public function getFields() {
 		return [
 			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
-			(new BaseField('tableName', ColumnType::string()))->setSqlName('TABLE_NAME')
+			(new BaseField('tableName', ColumnType::string()))->setSqlName('TABLE_NAME'),
+			(new BaseField('columnName', ColumnType::string()))->setSqlName('COLUMN_NAME')
 		];
 	}
 
