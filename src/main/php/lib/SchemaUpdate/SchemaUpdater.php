@@ -103,8 +103,7 @@ class SchemaUpdater {
 					$sql .= ',' . "\n";
 				}
 			}
-			println($sql);
-			$this->router->getConnection()->query($sql);
+			$this->doQuery($sql);
 		}
 	}
 
@@ -125,14 +124,26 @@ class SchemaUpdater {
 			}
 		}
 		$sql .= "\n" . ')';
-		println($sql);
-		$this->router->getConnection()->query($sql);
+		$this->doQuery($sql);
 	}
 
 	private function drop($tableName) {
 		$sql = 'drop table ' . $tableName;
+		$this->doQuery($sql);
+	}
+
+	/**
+	 * @param $sql array
+	 * @param $type
+	 */
+	private function doQuery($sql, $type = null) {
+		println('========= will do =========');
 		println($sql);
+		$start = microtime(true);
 		$this->router->getConnection()->query($sql);
+		$end = microtime(true);
+		$duration = round(1000 * ($end - $start));
+		println('======= done (' . $duration . 'ms) =======');
 	}
 
 }
