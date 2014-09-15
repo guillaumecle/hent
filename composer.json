@@ -1,0 +1,7 @@
+{
+	"name": "guillaumecle/hent",
+	"description": "A data access library",
+	"require": {
+		"phpunit/phpunit": "3.7.37"
+	}
+}
