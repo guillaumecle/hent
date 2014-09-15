@@ -113,7 +113,8 @@ class SchemaUpdater {
 	 */
 	private function create($node) {
 		$sql = 'create table ' . $node->getEscapedSqlName() . '(';
-		$iterator = new CachingIterator(new ArrayIterator($node->getDataBean()->getFields()));
+		$fields = array_merge($node->getDataBean()->getKey()->getFields(), $node->getDataBean()->getFields());
+		$iterator = new CachingIterator(new ArrayIterator($fields));
 		/**
 		 * @var $field Field
 		 */
@@ -124,12 +125,14 @@ class SchemaUpdater {
 			}
 		}
 		$sql .= "\n" . ')';
-		var_dump($sql);
-//		$this->router->getConnection()->query($sql);
+		println($sql);
+		$this->router->getConnection()->query($sql);
 	}
 
 	private function drop($tableName) {
-
+		$sql = 'drop table ' . $tableName;
+		println($sql);
+		$this->router->getConnection()->query($sql);
 	}
 
 }

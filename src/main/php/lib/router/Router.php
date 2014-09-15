@@ -32,6 +32,9 @@ abstract class Router {
 		$co = new PDO('mysql:host='.$PARAM_host.';port='.$PARAM_port.';dbname='.$PARAM_nom_bd, $PARAM_user, $PARAM_mot_passe);
 		$co->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$this->connection = $co;
+		if (!isset($this->nodes)) {
+			$this->nodes = [];
+		}
 		foreach ($this->nodes as $node) {
 			$node->setConnection($co);
 		}
