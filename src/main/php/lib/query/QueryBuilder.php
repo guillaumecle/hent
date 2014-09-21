@@ -97,4 +97,29 @@ class QueryBuilder {
 		return new PreparedQuery($params, $sql);
 	}
 
+	/**
+	 * @param $dataBean DataBean
+	 * @return PreparedQuery
+	 */
+	public function getUpdate($dataBean) {
+		$sql = 'update ' . $this->tableName . ' set ';
+		$iterator = new CachingIterator(new ArrayIterator($dataBean->getFields()));
+		$class = new ReflectionClass(get_class($dataBean));
+		$params = [];
+		/**
+		 * @var $field Field
+		 */
+		foreach ($iterator as $field) {
+			$sql .= $field->getEscapedSqlName() . '=?';
+			$prop = $class->getProperty($field->getName());
+			$prop->setAccessible(true);
+			$params[] = $prop->getValue($dataBean);
+			if ($iterator->hasNext()) {
+				$sql .= ', ';
+			}
+		}
+		$where = $this->getWhereClause($dataBean->getKey());
+		return new PreparedQuery(array_merge($params, $where->getData()), $sql . $where->getSql());
+	}
+
 }

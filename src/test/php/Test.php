@@ -15,33 +15,74 @@ class Test extends PHPUnit_Framework_TestCase {
 		self::$mr = new MyRouter();
 	}
 
+	public function testAllAndDelete() {
+		$all = self::$mr->exampleNode->all();
+		foreach ($all as $databean) {
+			self::$mr->exampleNode->delete($databean->getKey());
+		}
+		$count = count(self::$mr->exampleNode->all());
+		$this->assertEquals(0, $count);
+	}
+
 	public function testPutAndDelete() {
-		$data = new Example(new ExampleKey(time()), 1);
+		$id = time();
+		$data = new Example(new ExampleKey($id), 1);
 		$before = count(self::$mr->exampleNode->all());
+
 		self::$mr->exampleNode->put($data);
 		$after = count(self::$mr->exampleNode->all());
 		$this->assertEquals($before + 1, $after);
+
 		self::$mr->exampleNode->delete($data->getKey());
 		$after = count(self::$mr->exampleNode->all());
 		$this->assertEquals($before, $after);
 	}
 
 	public function testGet() {
-		$id = "1409655640";
+		$id = time();
+		$val = 5;
 		/**
 		 * @var $key ExampleKey
 		 */
-		$key = new ExampleKey(1409655640);
-		self::$mr->exampleNode->put(new Example($key, 5));
+		$key = new ExampleKey($id);
+		self::$mr->exampleNode->put(new Example($key, $val));
+		/**
+		 * @var $d Example
+		 */
 		$d = self::$mr->exampleNode->get($key);
 		$this->assertNotNull($d);
-		$key = $d->getKey();
-		$this->assertEquals($id, $key->getId());
-		self::$mr->exampleNode->delete($key);
+		$this->assertEquals($val, $d->getVal());
+		$this->assertEquals($id, $d->getKey()->getId());
 
-		$key = new ExampleKey(12);
+		$falseKey = new ExampleKey(123456);
+		$d = self::$mr->exampleNode->get($falseKey);
+		$this->assertNull($d);
+
+		self::$mr->exampleNode->delete($key);
 		$d = self::$mr->exampleNode->get($key);
 		$this->assertNull($d);
+	}
+
+	public function testUpdate() {
+		$id = time();
+		$val = 152;
+		$key = new ExampleKey($id);
+		$data = new Example($key, $val);
+		self::$mr->exampleNode->put($data);
+
+		/**
+		 * @var $fromDb Example
+		 */
+		$fromDb = self::$mr->exampleNode->get($key);
+		$this->assertEquals($val, $fromDb->getVal());
+
+		$newVal = 963;
+		$data->setVal($newVal);
+		self::$mr->exampleNode->put($data);
+		$fromDb = self::$mr->exampleNode->get($key);
+		$this->assertEquals($newVal, $fromDb->getVal());
+
+		self::$mr->exampleNode->delete($key);
 	}
 
 	public function testInfoSchema() {

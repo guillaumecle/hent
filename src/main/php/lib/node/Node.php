@@ -64,12 +64,21 @@ class Node {
 	 * @param $dataBean DataBean
 	 */
 	public function put(DataBean $dataBean) {
-		$pQuery = $this->builder->getInsert($dataBean);
-		$st = $this->co->prepare($pQuery->getSql());
-		$st->execute($pQuery->getData());
+		$key = $dataBean->getKey();
+		$inDdDataBean = $this->get($key);
+		if (isset($inDdDataBean)) {
+			$pQuery = $this->builder->getUpdate($dataBean);
+			$st = $this->co->prepare($pQuery->getSql());
+			$st->execute($pQuery->getData());
+		} else {
+			$pQuery = $this->builder->getInsert($dataBean);
+			$st = $this->co->prepare($pQuery->getSql());
+			$st->execute($pQuery->getData());
+		}
 	}
 
 	/**
+	 * Mainly for dev purpose
 	 * @return DataBean[]
 	 */
 	public function all() {

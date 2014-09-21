@@ -35,6 +35,10 @@ class Example implements DataBean {
 		return $this->val;
 	}
 
+	public function setVal($val) {
+		$this->val = $val;
+	}
+
 	public function getFields() {
 		return [
 			new BaseField('val', ColumnType::integer())
