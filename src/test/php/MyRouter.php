@@ -9,7 +9,7 @@ class MyRouter extends Router {
 
 	public function __construct() {
 		$this->exampleNode = parent::registerNode(new Node(new Example(new ExampleKey(null), null)));
-		parent::__construct('datamanagertest');
+		parent::__construct('hentTest');
 	}
 
 }
