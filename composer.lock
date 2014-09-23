@@ -4,8 +4,11 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "80ce7ddd8cc5fb9153bb233dce166e13",
+    "hash": "2d93002523c54b721d2c8d9acdc04642",
     "packages": [
+
+    ],
+    "packages-dev": [
         {
             "name": "phpunit/php-code-coverage",
             "version": "1.2.18",
@@ -419,9 +422,6 @@
             "homepage": "http://symfony.com",
             "time": "2014-08-31 03:22:04"
         }
-    ],
-    "packages-dev": [
-
     ],
     "aliases": [
 

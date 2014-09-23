@@ -88,16 +88,13 @@ class Test extends PHPUnit_Framework_TestCase {
 	public function testInfoSchema() {
 		$r = new InfoSchemaRouter();
 		/**
-		 * @var $d Tables
+		 * @var $d Tables[]
 		 */
-		$d = $r->tables->get(new TablesKey(self::$mr->getName(), self::$mr->exampleNode->getName()));
-		$this->assertNotNull($d);
-		$this->assertEquals('InnoDB', $d->getEngine());
+		$tables = $r->tables->lookup(new TablesBySchemaLookup(self::$mr->getName()));
+		$this->assertEquals(count(self::$mr->getNodes()), count($tables));
 		/**
 		 * @var Columns
 		 */
-//		$col = $r->columns->get(new ColumnsKey($mr->getName(), $mr->exampleNode->getName()));
-//		$this->assertNotNull($col);
 
 		$lookup = new ColumnsByTableLookup(self::$mr->getName(), self::$mr->exampleNode->getName());
 		$ds = $r->columns->lookup($lookup);

@@ -28,7 +28,7 @@ class SchemaUpdater {
 		 * @var $table Tables
 		 */
 		foreach ($databaseTables as $table) {
-			$tableNames[] = $table->getKey()->getName();
+			$tableNames[] = $table->getName();
 		}
 		$nodeNames = [];
 		foreach ($this->router->getNodes() as $node) {
@@ -72,7 +72,7 @@ class SchemaUpdater {
 		}
 		$columnsNames = [];
 		foreach ($cols as $col) {
-			$columnsNames[] = $col->getKey()->getColumnName();
+			$columnsNames[] = $col->getColumnName();
 		}
 		/**
 		 * @var $alters string[]

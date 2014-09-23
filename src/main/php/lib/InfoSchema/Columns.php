@@ -5,6 +5,21 @@ require_once 'ColumnsKey.php';
 class Columns implements DataBean {
 
 	/**
+	 * @var string
+	 */
+	private $schema;
+
+	/**
+	 * @var string
+	 */
+	private $tableName;
+
+	/**
+	 * @var string
+	 */
+	private $columnName;
+
+	/**
 	 * @var ColumnsKey
 	 */
 	private $key;
@@ -14,17 +29,22 @@ class Columns implements DataBean {
 	 */
 	private $columnType;
 
-	/**
-	 * @param $key ColumnsKey
-	 */
-	public function __construct($key) {
-		$this->key = $key;
+	public function __construct() {
+		$this->key = new ColumnsKey();
 	}
+
 	/**
 	 * @return ColumnsKey
 	 */
 	public function getKey() {
 		return $this->key;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getColumnName() {
+		return $this->columnName;
 	}
 
 	/**
@@ -39,6 +59,9 @@ class Columns implements DataBean {
 	 */
 	public function getFields() {
 		return [
+			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
+			(new BaseField('tableName', ColumnType::string()))->setSqlName('TABLE_NAME'),
+			(new BaseField('columnName', ColumnType::string()))->setSqlName('COLUMN_NAME'),
 			(new BaseField('columnType', ColumnType::string()))->setSqlName('COLUMN_TYPE')
 		];
 	}

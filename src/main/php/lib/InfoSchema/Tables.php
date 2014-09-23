@@ -12,15 +12,20 @@ class Tables implements DataBean {
 	/**
 	 * @var string
 	 */
-	private $engine;
+	private $schema;
 
 	/**
-	 * @param $key TablesKey
-	 * @param $engine string
+	 * @var string
 	 */
-	public function __construct($key, $engine) {
-		$this->key = $key;
-		$this->engine = $engine;
+	private $name;
+
+	/**
+	 * @var string
+	 */
+	private $engine;
+
+	public function __construct() {
+		$this->key = new TablesKey();
 	}
 
 	/**
@@ -33,12 +38,21 @@ class Tables implements DataBean {
 	/**
 	 * @return string
 	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getEngine() {
 		return $this->engine;
 	}
 
 	public function getFields() {
 		return [
+			(new BaseField('name', ColumnType::string()))->setSqlName('TABLE_NAME'),
+			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
 			(new BaseField('engine', ColumnType::string()))->setSQLName('ENGINE')
 		];
 	}
