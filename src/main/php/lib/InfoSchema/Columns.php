@@ -5,6 +5,11 @@ require_once 'ColumnsKey.php';
 class Columns implements DataBean {
 
 	/**
+	 * @var ColumnsKey
+	 */
+	private $key;
+
+	/**
 	 * @var string
 	 */
 	private $schema;
@@ -18,11 +23,6 @@ class Columns implements DataBean {
 	 * @var string
 	 */
 	private $columnName;
-
-	/**
-	 * @var ColumnsKey
-	 */
-	private $key;
 
 	/**
 	 * @var string

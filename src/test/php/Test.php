@@ -92,9 +92,6 @@ class Test extends PHPUnit_Framework_TestCase {
 		 */
 		$tables = $r->tables->lookup(new TablesBySchemaLookup(self::$mr->getName()));
 		$this->assertEquals(count(self::$mr->getNodes()), count($tables));
-		/**
-		 * @var Columns
-		 */
 
 		$lookup = new ColumnsByTableLookup(self::$mr->getName(), self::$mr->exampleNode->getName());
 		$ds = $r->columns->lookup($lookup);

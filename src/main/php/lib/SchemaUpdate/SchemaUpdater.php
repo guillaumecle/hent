@@ -71,8 +71,13 @@ class SchemaUpdater {
 			$fields[$field->getSqlName()] = $field;
 		}
 		$columnsNames = [];
+		/**
+		 * @var $colByName Columns[]
+		 */
+		$colByName = [];
 		foreach ($cols as $col) {
 			$columnsNames[] = $col->getColumnName();
+			$colByName[$col->getColumnName()] = $col;
 		}
 		/**
 		 * @var $alters string[]
@@ -81,6 +86,12 @@ class SchemaUpdater {
 		foreach ($filedNames as $fieldName) {
 			if (in_array($fieldName, $columnsNames)) {
 				//checkForUpdate
+				$field = $fields[$fieldName];
+				$col = $colByName[$fieldName];
+				if ($col->getColumnType() != $field->getType()->getMySQLDeclaration()) {
+					$sql ='modify column ' . $field->getEscapedSqlName() . ' ' . $fields[$fieldName]->getType()->getMySQLDeclaration();
+					$alters[] = $sql;
+				}
 			} else {
 				//doAdd
 				$sql ='add column ' . $fields[$fieldName]->getEscapedSqlName() . ' ' . $fields[$fieldName]->getType()->getMySQLDeclaration();
