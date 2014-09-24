@@ -108,7 +108,7 @@ class Test extends PHPUnit_Framework_TestCase {
 
 		$keyLookup = new KeyColumnsByTableAndName(self::$mr->getSqlName(), self::$mr->exampleNode->getSqlName(), 'PRIMARY');
 		$keyCol = $r->keys->lookup($keyLookup);
-		var_dump($keyCol);
+
 		$this->assertEquals(count(self::$mr->exampleNode->getDataBean()->getKey()->getFields()), count($keyCol));
 	}
 

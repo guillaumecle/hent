@@ -23,6 +23,20 @@ class KeyColumnUsage implements DataBean {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getColumn() {
+		return $this->column;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getPosition() {
+		return $this->position;
+	}
+
+	/**
 	 * @return Field[]
 	 */
 	public function getFields() {

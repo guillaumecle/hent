@@ -15,14 +15,14 @@ class SchemaUpdater {
 	 * @param $router Router
 	 */
 	public function __construct($router) {
-		if (!isset(SchemaUpdater::$infoSchemaRouter)) {
-			SchemaUpdater::$infoSchemaRouter = new InfoSchemaRouter();
+		if (!isset(self::$infoSchemaRouter)) {
+			self::$infoSchemaRouter = new InfoSchemaRouter();
 		}
 		$this->router = $router;
 	}
 
 	public function updateSchema() {
-		$databaseTables = SchemaUpdater::$infoSchemaRouter->tables->lookup(new TablesBySchemaLookup($this->router->getSqlName()));
+		$databaseTables = self::$infoSchemaRouter->tables->lookup(new TablesBySchemaLookup($this->router->getSqlName()));
 		$tableNames = [];
 		/**
 		 * @var $table Tables
@@ -105,6 +105,29 @@ class SchemaUpdater {
 				$alters[] = $sql;
 			}
 		}
+		//primary
+		$keyLookup = new KeyColumnsByTableAndName($this->router->getSqlName(), $node->getSqlName(), 'PRIMARY');
+		/**
+		 * @var KeyColumnUsage[] $keyCols
+		 */
+		$keyCols = self::$infoSchemaRouter->keys->lookup($keyLookup);
+		$dbKeys = [];
+		foreach ($keyCols as $col) {
+			$dbKeys[intval($col->getPosition()) - 1] = $col->getColumn();
+		}
+		$pkFields = $node->getDataBean()->getKey()->getFields();
+		$pkFieldsName = [];
+		foreach ($pkFields as $field) {
+			$pkFieldsName[] = $field->getSqlName();
+		}
+		if ($dbKeys !== $pkFieldsName) {
+			if (count($keyCols) > 0) {
+				$alters[] = 'drop primary key';
+			}
+			$createPK = 'add ' . $this->getPrimaryKeyDefinition($pkFields);
+			$alters[] = $createPK;
+		}
+
 		if (count($alters) > 0) {
 			$iterator = new CachingIterator(new ArrayIterator($alters));
 			$sql = 'alter table ' . $node->getEscapedSqlName() . "\n";
@@ -123,7 +146,8 @@ class SchemaUpdater {
 	 */
 	private function create($node) {
 		$sql = 'create table ' . $node->getEscapedSqlName() . '(';
-		$fields = array_merge($node->getDataBean()->getKey()->getFields(), $node->getDataBean()->getFields());
+		$pkFields = $node->getDataBean()->getKey()->getFields();
+		$fields = array_merge($pkFields, $node->getDataBean()->getFields());
 		$iterator = new CachingIterator(new ArrayIterator($fields));
 		/**
 		 * @var $field Field
@@ -133,6 +157,10 @@ class SchemaUpdater {
 			if ($iterator->hasNext()) {
 				$sql .= ',';
 			}
+		}
+		if (count($pkFields) > 0) {
+			$sql .= ',' . "\n\t";
+			$sql .= $this->getPrimaryKeyDefinition($pkFields);
 		}
 		$sql .= "\n" . ')';
 		$this->doQuery($sql);
@@ -155,6 +183,26 @@ class SchemaUpdater {
 		$end = microtime(true);
 		$duration = round(1000 * ($end - $start));
 		println('======= done (' . $duration . 'ms) =======');
+	}
+
+	/**
+	 * @param Field[] $pkFields
+	 * @return string
+	 */
+	private function getPrimaryKeyDefinition($pkFields) {
+		$createPK = 'primary key (';
+		$pkFieldsIter = new CachingIterator(new ArrayIterator($pkFields));
+		/**
+		 * @var Field $field
+		 */
+		foreach ($pkFieldsIter as $field) {
+			$createPK .= $field->getEscapedSqlName();
+			if ($pkFieldsIter->hasNext()) {
+				$createPK .= ',';
+			}
+		}
+		$createPK .= ')';
+		return $createPK;
 	}
 
 }
