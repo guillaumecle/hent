@@ -95,7 +95,7 @@ class Test extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(self::$mr->getSqlName(), $tables[0]->getSchema());
 
-		$lookup = new ColumnsByTableLookup(self::$mr->getSqlName(), self::$mr->exampleNode->getName());
+		$lookup = new ColumnsByTableLookup(self::$mr->getSqlName(), self::$mr->exampleNode->getSqlName());
 		/**
 		 * @var $columns Columns[]
 		 */
@@ -106,7 +106,11 @@ class Test extends PHPUnit_Framework_TestCase {
 		$nb = count(self::$mr->exampleNode->getDataBean()->getFields()) + count(self::$mr->exampleNode->getDataBean()->getKey()->getFields());
 		$this->assertEquals($nb, count($columns));
 
-
+		$keyLookup = new KeyColumnsByTableAndName(self::$mr->getSqlName(), self::$mr->exampleNode->getSqlName(), 'PRIMARY');
+		$keyCol = $r->keys->lookup($keyLookup);
+		var_dump($keyCol);
+		$this->assertEquals(count(self::$mr->exampleNode->getDataBean()->getKey()->getFields()), count($keyCol));
 	}
+
 }
 

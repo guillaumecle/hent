@@ -4,6 +4,11 @@ require_once __DIR__.'/../query/QueryBuilder.php';
 class Node {
 
 	/**
+	 * @var string
+	 */
+	private $sqlName;
+
+	/**
 	 * @var PDO
 	 */
 	private $co;
@@ -19,16 +24,23 @@ class Node {
 
 	/**
 	 * @param $dataBean DataBean
+	 * @param $sqlName string
 	 */
-	public function __construct($dataBean) {
+	public function __construct($dataBean, $sqlName = null) {
 		$this->dataBean = $dataBean;
+		if (!empty($sqlName)) {
+			$this->sqlName = $sqlName;
+		}
 		$this->builder = new QueryBuilder($this);
 	}
 
 	/**
-	 * @return String
+	 * @return string
 	 */
-	public function getName() {
+	private function getName() {
+		if (isset($this->sqlName)) {
+			return $this->sqlName;
+		}
 		return get_class($this->dataBean);
 	}
 
@@ -43,7 +55,7 @@ class Node {
 	 * @return string
 	 */
 	public function getEscapedSqlName() {
-		return '`' . strtolower($this->getName()) . '`';
+		return '`' . $this->getSqlName() . '`';
 	}
 
 	/**
@@ -170,7 +182,7 @@ class Node {
 	 * @throws Exception
 	 */
 	private function checkKey(Key $key) {
-		if (get_class($key) != get_class($this->getDataBean()->getKey())) {
+		if (!is_a($key, get_class($this->getDataBean()->getKey()))) {
 			throw new Exception('Doesn\'t match key class (expected:' . get_class($this->getDataBean()->getKey()) . ', given: ' . get_class($key) . ')');
 		}
 	}
