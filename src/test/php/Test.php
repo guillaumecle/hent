@@ -88,16 +88,25 @@ class Test extends PHPUnit_Framework_TestCase {
 	public function testInfoSchema() {
 		$r = new InfoSchemaRouter();
 		/**
-		 * @var $d Tables[]
+		 * @var $tables Tables[]
 		 */
-		$tables = $r->tables->lookup(new TablesBySchemaLookup(self::$mr->getName()));
+		$tables = $r->tables->lookup(new TablesBySchemaLookup(self::$mr->getSqlName()));
 		$this->assertEquals(count(self::$mr->getNodes()), count($tables));
 
-		$lookup = new ColumnsByTableLookup(self::$mr->getName(), self::$mr->exampleNode->getName());
-		$ds = $r->columns->lookup($lookup);
-		$this->assertNotNull($ds);
+		$this->assertEquals(self::$mr->getSqlName(), $tables[0]->getSchema());
+
+		$lookup = new ColumnsByTableLookup(self::$mr->getSqlName(), self::$mr->exampleNode->getName());
+		/**
+		 * @var $columns Columns[]
+		 */
+		$columns = $r->columns->lookup($lookup);
+		$this->assertNotNull($columns);
+		$this->assertEquals(self::$mr->getSqlName(), $columns[0]->getSchema());
+
 		$nb = count(self::$mr->exampleNode->getDataBean()->getFields()) + count(self::$mr->exampleNode->getDataBean()->getKey()->getFields());
-		$this->assertEquals($nb, count($ds));
+		$this->assertEquals($nb, count($columns));
+
+
 	}
 }
 

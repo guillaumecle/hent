@@ -63,8 +63,15 @@ abstract class Router {
 	/**
 	 * @return String
 	 */
-	public function getName() {
+	private function getName() {
 		return $this->name;
+	}
+
+	/**
+	 * @return String
+	 */
+	public function getSqlName() {
+		return strtolower($this->name);
 	}
 
 	/**

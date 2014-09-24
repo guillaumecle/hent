@@ -38,6 +38,13 @@ class Tables implements DataBean {
 	/**
 	 * @return string
 	 */
+	public function getSchema() {
+		return $this->schema;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getName() {
 		return $this->name;
 	}

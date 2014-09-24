@@ -43,6 +43,13 @@ class Columns implements DataBean {
 	/**
 	 * @return string
 	 */
+	public function getSchema() {
+		return $this->schema;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getColumnName() {
 		return $this->columnName;
 	}

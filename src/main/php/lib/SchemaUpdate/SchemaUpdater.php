@@ -22,7 +22,7 @@ class SchemaUpdater {
 	}
 
 	public function updateSchema() {
-		$databaseTables = SchemaUpdater::$infoSchemaRouter->tables->lookup(new TablesBySchemaLookup($this->router->getName()));
+		$databaseTables = SchemaUpdater::$infoSchemaRouter->tables->lookup(new TablesBySchemaLookup($this->router->getSqlName()));
 		$tableNames = [];
 		/**
 		 * @var $table Tables
@@ -56,7 +56,7 @@ class SchemaUpdater {
 		/**
 		 * @var $cols Columns[]
 		 */
-		$cols = self::$infoSchemaRouter->columns->lookup(new ColumnsByTableLookup($this->router->getName(), $node->getSqlName()));
+		$cols = self::$infoSchemaRouter->columns->lookup(new ColumnsByTableLookup($this->router->getSqlName(), $node->getSqlName()));
 		$filedNames = [];
 		/**
 		 * @var $fields Field[];
