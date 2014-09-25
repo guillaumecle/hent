@@ -44,4 +44,12 @@ class Example implements DataBean {
 			new BaseField('val', ColumnType::string())
 		];
 	}
+
+	/**
+	 * @return Lookup[]
+	 */
+	public function getIndexes() {
+		return [];
+	}
+
 }

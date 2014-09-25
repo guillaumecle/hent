@@ -72,6 +72,16 @@ class Columns implements DataBean {
 			(new BaseField('columnType', ColumnType::string()))->setSqlName('COLUMN_TYPE')
 		];
 	}
+
+	/**
+	 * @return Lookup[]
+	 */
+	public function getIndexes() {
+		return [
+			new ColumnsByTableLookup(null, null)
+		];
+	}
+
 }
 class ColumnsByTableLookup implements Lookup {
 

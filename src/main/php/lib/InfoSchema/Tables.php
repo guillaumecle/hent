@@ -64,6 +64,15 @@ class Tables implements DataBean {
 		];
 	}
 
+	/**
+	 * @return Lookup[]
+	 */
+	public function getIndexes() {
+		return [
+			new TablesBySchemaLookup(null)
+		];
+	}
+
 }
 class TablesBySchemaLookup implements Lookup {
 

@@ -7,4 +7,8 @@ interface DataBean extends Fieldable {
 	 */
 	public function getKey();
 
+	/**
+	 * @return Lookup[]
+	 */
+	public function getIndexes();
 }

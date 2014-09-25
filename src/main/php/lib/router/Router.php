@@ -70,7 +70,7 @@ abstract class Router {
 	 * @return String
 	 */
 	public function getSqlName() {
-		return strtolower($this->name);
+		return strtolower($this->getName());
 	}
 
 	/**

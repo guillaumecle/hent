@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../databean/DataBean.php';
 require_once __DIR__.'/../query/QueryBuilder.php';
+require_once __DIR__.'/../databean/LookupTool.php';
 class Node {
 
 	/**
@@ -189,9 +190,24 @@ class Node {
 
 	/**
 	 * @param $lookup Lookup
+	 * @throws Exception
 	 */
 	private function checkLookup($lookup) {
+		$indexNames = $this->getIndexNames();
+		$indexName = LookupTool::getIndexName($lookup);
+		if (!in_array($indexName, $indexNames)) {
+			throw new Exception('The lookup "' . $indexName . '" is not register as an index for the databean ' . get_class($this->getDataBean()));
+		}
+	}
 
+	private function getIndexNames() {
+		if (!isset($this->indexNames)) {
+			$this->indexNames = [];
+			foreach ($this->getDataBean()->getIndexes() as $index) {
+				$this->indexNames[] = LookupTool::getIndexName($index);
+			}
+		}
+		return $this->indexNames;
 	}
 
 }

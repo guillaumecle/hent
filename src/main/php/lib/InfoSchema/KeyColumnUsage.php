@@ -49,6 +49,15 @@ class KeyColumnUsage implements DataBean {
 		];
 	}
 
+	/**
+	 * @return Lookup[]
+	 */
+	public function getIndexes() {
+		return [
+			new KeyColumnsByTableAndName(null, null, null)
+		];
+	}
+
 }
 class KeyColumnsByTableAndName implements Lookup {
 
