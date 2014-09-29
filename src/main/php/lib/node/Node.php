@@ -200,6 +200,9 @@ class Node {
 		}
 	}
 
+	/**
+	 * @return string[]
+	 */
 	private function getIndexNames() {
 		if (!isset($this->indexNames)) {
 			$this->indexNames = [];

@@ -81,6 +81,9 @@ class TablesBySchemaLookup implements Lookup {
 	 */
 	private $schema;
 
+	/**
+	 * @param string $schema
+	 */
 	public function __construct($schema) {
 		$this->schema = $schema;
 	}

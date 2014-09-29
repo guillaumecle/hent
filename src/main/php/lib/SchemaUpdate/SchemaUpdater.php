@@ -22,6 +22,7 @@ class SchemaUpdater {
 	}
 
 	public function updateSchema() {
+		$this->checkAndCreateDatabase();
 		$databaseTables = self::$infoSchemaRouter->tables->lookup(new TablesBySchemaLookup($this->router->getSqlName()));
 		$tableNames = [];
 		/**
@@ -130,7 +131,7 @@ class SchemaUpdater {
 
 		if (count($alters) > 0) {
 			$iterator = new CachingIterator(new ArrayIterator($alters));
-			$sql = 'alter table ' . $node->getEscapedSqlName() . "\n";
+			$sql = 'alter table ' . $this->router->getSqlName() . '.' . $node->getEscapedSqlName() . "\n";
 			foreach ($iterator as $alter) {
 				$sql .= '  ' . $alter;
 				if ($iterator->hasNext()) {
@@ -145,7 +146,7 @@ class SchemaUpdater {
 	 * @param $node Node
 	 */
 	private function create($node) {
-		$sql = 'create table ' . $node->getEscapedSqlName() . '(';
+		$sql = 'create table ' . $this->router->getSqlName() . '.' . $node->getEscapedSqlName() . '(';
 		$pkFields = $node->getDataBean()->getKey()->getFields();
 		$fields = array_merge($pkFields, $node->getDataBean()->getFields());
 		$iterator = new CachingIterator(new ArrayIterator($fields));
@@ -167,7 +168,7 @@ class SchemaUpdater {
 	}
 
 	private function drop($tableName) {
-		$sql = 'drop table ' . $tableName;
+		$sql = 'drop table ' . $this->router->getSqlName() . '.' . $tableName;
 		$this->doQuery($sql);
 	}
 
@@ -179,7 +180,7 @@ class SchemaUpdater {
 		println('========= will do =========');
 		println($sql);
 		$start = microtime(true);
-		$this->router->getConnection()->query($sql);
+		self::$infoSchemaRouter->getConnection()->query($sql);
 		$end = microtime(true);
 		$duration = round(1000 * ($end - $start));
 		println('======= done (' . $duration . 'ms) =======');
@@ -203,6 +204,14 @@ class SchemaUpdater {
 		}
 		$createPK .= ')';
 		return $createPK;
+	}
+
+	private function checkAndCreateDatabase() {
+		$databases = self::$infoSchemaRouter->schemata->lookup(new SchemataByNameLookup($this->router->getSqlName()));
+		if (count($databases) == 0) {
+			$sql = 'create database ' . $this->router->getSqlName();
+			$this->doQuery($sql);
+		}
 	}
 
 }

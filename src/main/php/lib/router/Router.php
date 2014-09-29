@@ -24,23 +24,12 @@ abstract class Router {
 	 */
 	public function __construct($name, $updateSchema = true) {
 		$this->name = $name;
-		$PARAM_host = 'localhost';
-		$PARAM_port = '3306';
-		$PARAM_user = 'root';
-		$PARAM_mot_passe = '';
-		$co = new PDO('mysql:host='.$PARAM_host.';port='.$PARAM_port.';dbname='.$this->getSqlName(), $PARAM_user, $PARAM_mot_passe);
-		$co->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$this->connection = $co;
-		if (!isset($this->nodes)) {
-			$this->nodes = [];
-		}
-		foreach ($this->nodes as $node) {
-			$node->setConnection($co);
-		}
 		if ($updateSchema) {
 			$su = new SchemaUpdater($this);
 			$su->updateSchema();
 		}
+		$this->connection = $this->createConnection();
+		$this->updateNodes();
 	}
 
 	/**
@@ -78,6 +67,31 @@ abstract class Router {
 	 */
 	public function getNodes() {
 		return $this->nodes;
+	}
+
+	/**
+	 * @return PDO
+	 */
+	private function createConnection() {
+		$PARAM_host = 'localhost';
+		$PARAM_port = '3306';
+		$PARAM_user = 'root';
+		$PARAM_mot_passe = '';
+		$co = new PDO('mysql:host='.$PARAM_host.';port='.$PARAM_port.';dbname='.$this->getSqlName(), $PARAM_user, $PARAM_mot_passe);
+		$co->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		return $co;
+	}
+
+	private function updateNodes() {
+		if (empty($this->connection)) {
+			throw new Exception('Router::connection should be set before calling this');
+		}
+		if (!isset($this->nodes)) {
+			$this->nodes = [];
+		}
+		foreach ($this->nodes as $node) {
+			$node->setConnection($this->connection);
+		}
 	}
 
 }
