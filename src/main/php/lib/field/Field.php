@@ -21,5 +21,11 @@ interface Field {
 	 */
 	public function getType();
 
+	/**
+	 * @param string $dbString
+	 * @return mixed
+	 */
+	public function valueOf($dbString);
+
 }
 

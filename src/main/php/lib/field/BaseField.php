@@ -63,6 +63,14 @@ class BaseField implements Field {
 		return $this->type;
 	}
 
+	/**
+	 * @param string $dbString
+	 * @return mixed
+	 */
+	public function valueOf($dbString) {
+		return $this->type->valueOf($dbString);
+	}
+
 	public function __toString() {
 		return $this->fieldName . ' (' . $this->getEscapedSqlName() . ' ' . $this->type->getMySQLDeclaration() . ')';
 	}

@@ -52,7 +52,7 @@ class Test extends PHPUnit_Framework_TestCase {
 		$d = self::$mr->exampleNode->get($key);
 		$this->assertNotNull($d);
 		$this->assertEquals($val, $d->getVal());
-		$this->assertEquals($id, $d->getKey()->getId());
+		$this->assertSame($id, $d->getKey()->getId());
 
 		$falseKey = new ExampleKey(123456);
 		$d = self::$mr->exampleNode->get($falseKey);

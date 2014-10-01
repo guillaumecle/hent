@@ -114,7 +114,7 @@ class SchemaUpdater {
 		$keyCols = self::$infoSchemaRouter->keys->lookup($keyLookup);
 		$dbKeys = [];
 		foreach ($keyCols as $col) {
-			$dbKeys[intval($col->getPosition()) - 1] = $col->getColumn();
+			$dbKeys[$col->getPosition() - 1] = $col->getColumn();
 		}
 		$pkFields = $node->getDataBean()->getKey()->getFields();
 		$pkFieldsName = [];

@@ -149,7 +149,7 @@ class Node {
 			$fieldName = $field->getName();
 			$prop = $kClass->getProperty($fieldName);
 			$prop->setAccessible(true);
-			$prop->setValue($key, $rs[$field->getSqlName()]);
+			$prop->setValue($key, $field->valueOf($rs[$field->getSqlName()]));
 		}
 
 		$d = $this->getDataBean();
