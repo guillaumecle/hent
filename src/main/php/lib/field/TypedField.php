@@ -15,12 +15,11 @@ class TypedField extends  BaseField {
 	/**
 	 * @param string $name
 	 * @param ColumnType $type
-	 * @param $serializer
-	 * @param $deserializer
+	 * @param callable $serializer
+	 * @param callable $deserializer
 	 */
 	public function __construct($name, $type, $serializer, $deserializer) {
-		parent::__construct($name);
-		$this->setType($type);
+		parent::__construct($name, $type);
 		$this->serializer = $serializer;
 		$this->deserializer = $deserializer;
 	}

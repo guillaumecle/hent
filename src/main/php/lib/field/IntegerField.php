@@ -2,8 +2,7 @@
 class IntegerField extends BaseField {
 
 	public function __construct($name, $size = 11) {
-		parent::__construct($name);
-		$this->setType(ColumnType::integer($size));
+		parent::__construct($name, ColumnType::integer($size));
 	}
 
 	/**

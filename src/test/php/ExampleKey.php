@@ -9,10 +9,17 @@ class ExampleKey implements Key {
 	private $id;
 
 	/**
-	 * @param int $id
+	 * @var string
 	 */
-	public function __construct($id) {
+	private $user;
+
+	/**
+	 * @param int $id
+	 * @param string $user
+	 */
+	public function __construct($id, $user) {
 		$this->id = $id;
+		$this->user = $user;
 	}
 
 	/**
@@ -24,7 +31,8 @@ class ExampleKey implements Key {
 
 	public function getFields() {
 		return [
-			new IntegerField('id')
+			new IntegerField('id'),
+			new StringField('user')
 		];
 	}
 

@@ -2,8 +2,7 @@
 class DateField extends BaseField {
 
 	public function __construct($name) {
-		parent::__construct($name);
-		$this->setType(ColumnType::datetime());
+		parent::__construct($name, ColumnType::datetime());
 	}
 
 	/**

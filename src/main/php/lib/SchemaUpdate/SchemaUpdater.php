@@ -129,6 +129,8 @@ class SchemaUpdater {
 			$alters[] = $createPK;
 		}
 
+		//index
+
 		if (count($alters) > 0) {
 			$iterator = new CachingIterator(new ArrayIterator($alters));
 			$sql = 'alter table ' . $this->router->getSqlName() . '.' . $node->getEscapedSqlName() . "\n";

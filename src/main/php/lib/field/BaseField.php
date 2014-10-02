@@ -20,9 +20,10 @@ abstract class BaseField implements Field {
 	/**
 	 * @param $name string
 	 */
-	public function __construct($name) {
+	public function __construct($name, $type) {
 		$this->fieldName = $name;
 		$this->sqlName = $name;
+		$this->type = $type;
 	}
 
 	/**
@@ -48,7 +49,7 @@ abstract class BaseField implements Field {
 
 	/**
 	 * @param string $sqlName
-	 * @return $this BaseField
+	 * @return BaseField $this
 	 */
 	public function setSqlName($sqlName) {
 		$this->sqlName = $sqlName;
@@ -63,12 +64,8 @@ abstract class BaseField implements Field {
 	}
 
 	/**
-	 * @param ColumnType $type
+	 * @return string
 	 */
-	protected function setType($type) {
-		$this->type = $type;
-	}
-
 	public function __toString() {
 		return $this->fieldName . ' (' . $this->getEscapedSqlName() . ' ' . $this->type->getMySQLDeclaration() . ')';
 	}

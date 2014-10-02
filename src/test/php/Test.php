@@ -26,7 +26,7 @@ class Test extends PHPUnit_Framework_TestCase {
 
 	public function testPutAndDelete() {
 		$id = time();
-		$data = new Example(new ExampleKey($id), 1, new DateTime());
+		$data = new Example(new ExampleKey($id, 'me'), 1, new DateTime());
 		$before = count(self::$mr->exampleNode->all());
 
 		self::$mr->exampleNode->put($data);
@@ -41,12 +41,11 @@ class Test extends PHPUnit_Framework_TestCase {
 	public function testGet() {
 		$id = time();
 		$val = 'hey';
-		$date = new DateTime();
 
 		/**
 		 * @var $key ExampleKey
 		 */
-		$key = new ExampleKey($id);
+		$key = new ExampleKey($id, 'me');
 		self::$mr->exampleNode->put(new Example($key, $val, new DateTime()));
 		/**
 		 * @var $d Example
@@ -56,7 +55,7 @@ class Test extends PHPUnit_Framework_TestCase {
 		$this->assertSame($val, $d->getVal());
 		$this->assertSame($id, $d->getKey()->getId());
 
-		$falseKey = new ExampleKey(123456);
+		$falseKey = new ExampleKey(123456, 'me');
 		$d = self::$mr->exampleNode->get($falseKey);
 		$this->assertNull($d);
 
@@ -68,7 +67,7 @@ class Test extends PHPUnit_Framework_TestCase {
 	public function testUpdate() {
 		$id = time();
 		$val = 152;
-		$key = new ExampleKey($id);
+		$key = new ExampleKey($id, 'me');
 		$data = new Example($key, $val, new DateTime());
 		self::$mr->exampleNode->put($data);
 
@@ -110,8 +109,10 @@ class Test extends PHPUnit_Framework_TestCase {
 
 		$keyLookup = new KeyColumnsByTableAndName(self::$mr->getSqlName(), self::$mr->exampleNode->getSqlName(), 'PRIMARY');
 		$keyCol = $r->keys->lookup($keyLookup);
-
 		$this->assertEquals(count(self::$mr->exampleNode->getDataBean()->getKey()->getFields()), count($keyCol));
+
+		$indexesLookup = new IndexesByTable(self::$mr->getSqlName(), self::$mr->exampleNode->getSqlName());
+		$indexesCols = $r->indexes->lookup($indexesLookup);
 	}
 
 	public function testFields() {
@@ -122,7 +123,7 @@ class Test extends PHPUnit_Framework_TestCase {
 		/**
 		 * @var $key ExampleKey
 		 */
-		$key = new ExampleKey($id);
+		$key = new ExampleKey($id, 'me');
 		self::$mr->exampleNode->put(new Example($key, $val, new DateTime()));
 		/**
 		 * @var $d Example

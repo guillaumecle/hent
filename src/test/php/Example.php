@@ -52,6 +52,9 @@ class Example implements DataBean {
 		return $this->date;
 	}
 
+	/**
+	 * @return Field[]
+	 */
 	public function getFields() {
 		return [
 			new StringField('val'),
@@ -63,7 +66,41 @@ class Example implements DataBean {
 	 * @return Lookup[]
 	 */
 	public function getIndexes() {
-		return [];
+		return [
+			new TestLookup(null, null)
+		];
+	}
+
+}
+class TestLookup implements Lookup {
+
+	/**
+	 * @var string
+	 */
+	private $val;
+
+	/**
+	 * @var DateTime
+	 */
+	private $date;
+
+	/**
+	 * @param DateTime $date
+	 * @param string $val
+	 */
+	function __construct($date, $val) {
+		$this->date = $date;
+		$this->val = $val;
+	}
+
+	/**
+	 * @return Field[]
+	 */
+	public function getFields() {
+		return [
+			new StringField('val'),
+			new DateField('date')
+		];
 	}
 
 }
