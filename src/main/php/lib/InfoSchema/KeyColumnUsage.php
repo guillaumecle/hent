@@ -41,11 +41,11 @@ class KeyColumnUsage implements DataBean {
 	 */
 	public function getFields() {
 		return [
-				(new BaseField('name', ColumnType::string()))->setSqlName('CONSTRAINT_NAME'),
-				(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
-				(new BaseField('table', ColumnType::string()))->setSqlName('TABLE_NAME'),
-				(new BaseField('column', ColumnType::string()))->setSqlName('COLUMN_NAME'),
-				(new BaseField('position', ColumnType::integer()))->setSqlName('ORDINAL_POSITION')
+				(new StringField('name'))->setSqlName('CONSTRAINT_NAME'),
+				(new StringField('schema'))->setSqlName('TABLE_SCHEMA'),
+				(new StringField('table'))->setSqlName('TABLE_NAME'),
+				(new StringField('column'))->setSqlName('COLUMN_NAME'),
+				(new IntegerField('position'))->setSqlName('ORDINAL_POSITION')
 		];
 	}
 
@@ -89,9 +89,9 @@ class KeyColumnsByTableAndName implements Lookup {
 
 	public function getFields() {
 		return [
-			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
-			(new BaseField('tableName', ColumnType::string()))->setSqlName('TABLE_NAME'),
-			(new BaseField('keyName', ColumnType::string()))->setSqlName('CONSTRAINT_NAME')
+			(new StringField('schema'))->setSqlName('TABLE_SCHEMA'),
+			(new StringField('tableName'))->setSqlName('TABLE_NAME'),
+			(new StringField('keyName'))->setSqlName('CONSTRAINT_NAME')
 		];
 	}
 

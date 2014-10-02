@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../databean/DataBean.php';
 require_once __DIR__.'/../databean/Lookup.php';
+require_once __DIR__ . '/../field/StringField.php';
 require_once 'ColumnsKey.php';
 class Columns implements DataBean {
 
@@ -66,10 +67,10 @@ class Columns implements DataBean {
 	 */
 	public function getFields() {
 		return [
-			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
-			(new BaseField('tableName', ColumnType::string()))->setSqlName('TABLE_NAME'),
-			(new BaseField('columnName', ColumnType::string()))->setSqlName('COLUMN_NAME'),
-			(new BaseField('columnType', ColumnType::string()))->setSqlName('COLUMN_TYPE')
+			(new StringField('schema'))->setSqlName('TABLE_SCHEMA'),
+			(new StringField('tableName'))->setSqlName('TABLE_NAME'),
+			(new StringField('columnName'))->setSqlName('COLUMN_NAME'),
+			(new StringField('columnType'))->setSqlName('COLUMN_TYPE')
 		];
 	}
 
@@ -120,8 +121,8 @@ class ColumnsByTableLookup implements Lookup {
 
 	public function getFields() {
 		return [
-			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
-			(new BaseField('tableName', ColumnType::string()))->setSqlName('TABLE_NAME')
+			(new StringField('schema'))->setSqlName('TABLE_SCHEMA'),
+			(new StringField('tableName'))->setSqlName('TABLE_NAME')
 		];
 	}
 

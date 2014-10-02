@@ -2,17 +2,26 @@
 class ColumnType {
 
 	/**
+	 * @param int $size
 	 * @return ColumnType
 	 */
-	public static function integer() {
-		return new ColumnType('int(11)', function($s) {return intval($s);});
+	public static function integer($size) {
+		return new ColumnType('int(' . $size . ')');
+	}
+
+	/**
+	 * @param int $size
+	 * @return ColumnType
+	 */
+	public static function string($size) {
+		return new ColumnType('varchar(' . $size . ')');
 	}
 
 	/**
 	 * @return ColumnType
 	 */
-	public static function string() {
-		return new ColumnType('varchar(255)', function($s) {return $s;});
+	public static function datetime() {
+		return new ColumnType('datetime');
 	}
 
 	/**
@@ -20,15 +29,11 @@ class ColumnType {
 	 */
 	private $sqlType;
 
-	private $valueOfCallback;
-
 	/**
 	 * @param string $sqlType
-	 * @param callable $valueOfCallback
 	 */
-	private function __construct($sqlType, $valueOfCallback) {
+	private function __construct($sqlType) {
 		$this->sqlType = $sqlType;
-		$this->valueOfCallback = $valueOfCallback;
 	}
 
 	/**
@@ -36,14 +41,6 @@ class ColumnType {
 	 */
 	public function getMySQLDeclaration() {
 		return $this->sqlType;
-	}
-
-	/**
-	 * @param string $string
-	 * @return mixed
-	 */
-	public function valueOf($string) {
-		return call_user_func($this->valueOfCallback, $string);
 	}
 
 }

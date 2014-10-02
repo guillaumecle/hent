@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__.'/../../main/php/lib/databean/Key.php';
-require_once __DIR__.'/../../main/php/lib/field/ColumnType.php';
+require_once __DIR__.'/../../main/php/lib/field/IntegerField.php';
 class ExampleKey implements Key {
 
 	/**
@@ -24,7 +24,7 @@ class ExampleKey implements Key {
 
 	public function getFields() {
 		return [
-			new BaseField('id', ColumnType::integer())
+			new IntegerField('id')
 		];
 	}
 

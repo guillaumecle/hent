@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../databean/DataBean.php';
 require_once __DIR__.'/../databean/Lookup.php';
+require_once __DIR__ . '/../field/StringField.php';
 require_once 'TablesKey.php';
 class Tables implements DataBean {
 
@@ -58,9 +59,9 @@ class Tables implements DataBean {
 
 	public function getFields() {
 		return [
-			(new BaseField('name', ColumnType::string()))->setSqlName('TABLE_NAME'),
-			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA'),
-			(new BaseField('engine', ColumnType::string()))->setSQLName('ENGINE')
+			(new StringField('name'))->setSqlName('TABLE_NAME'),
+			(new StringField('schema'))->setSqlName('TABLE_SCHEMA'),
+			(new StringField('engine'))->setSQLName('ENGINE')
 		];
 	}
 
@@ -93,7 +94,7 @@ class TablesBySchemaLookup implements Lookup {
 	 */
 	public function getFields() {
 		return [
-			(new BaseField('schema', ColumnType::string()))->setSqlName('TABLE_SCHEMA')
+			(new StringField('schema'))->setSqlName('TABLE_SCHEMA')
 		];
 	}
 

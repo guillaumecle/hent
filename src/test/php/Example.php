@@ -41,7 +41,7 @@ class Example implements DataBean {
 
 	public function getFields() {
 		return [
-			new BaseField('val', ColumnType::string())
+			new StringField('val')
 		];
 	}
 

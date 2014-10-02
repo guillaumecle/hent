@@ -1,6 +1,6 @@
 <?php
 require_once 'Field.php';
-class BaseField implements Field {
+abstract class BaseField implements Field {
 
 	/**
 	 * @var string
@@ -19,11 +19,9 @@ class BaseField implements Field {
 
 	/**
 	 * @param $name string
-	 * @param $type ColumnType
 	 */
-	public function __construct($name, ColumnType $type) {
+	public function __construct($name) {
 		$this->fieldName = $name;
-		$this->type = $type;
 		$this->sqlName = $name;
 	}
 
@@ -47,6 +45,7 @@ class BaseField implements Field {
 	public function getEscapedSqlName() {
 		return '`' . $this->sqlName . '`';
 	}
+
 	/**
 	 * @param string $sqlName
 	 * @return $this BaseField
@@ -64,11 +63,10 @@ class BaseField implements Field {
 	}
 
 	/**
-	 * @param string $dbString
-	 * @return mixed
+	 * @param ColumnType $type
 	 */
-	public function valueOf($dbString) {
-		return $this->type->valueOf($dbString);
+	protected function setType($type) {
+		$this->type = $type;
 	}
 
 	public function __toString() {

@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../databean/DataBean.php';
 require_once __DIR__ . '/../databean/Lookup.php';
+require_once __DIR__ . '/../field/StringField.php';
 require_once 'SchemataKey.php';
 class Schemata implements DataBean {
 
@@ -39,7 +40,7 @@ class Schemata implements DataBean {
 	 */
 	public function getFields() {
 		return [
-			(new BaseField('schema', ColumnType::string()))->setSqlName('SCHEMA_NAME')
+			(new StringField('schema'))->setSqlName('SCHEMA_NAME')
 		];
 	}
 
@@ -63,7 +64,7 @@ class SchemataByNameLookup implements Lookup {
 	 */
 	public function getFields() {
 		return [
-			(new BaseField('name', ColumnType::string()))->setSqlName('SCHEMA_NAME')
+			(new StringField('name'))->setSqlName('SCHEMA_NAME')
 		];
 	}
 
