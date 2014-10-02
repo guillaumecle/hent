@@ -149,7 +149,7 @@ class Node {
 			$fieldName = $field->getName();
 			$prop = $kClass->getProperty($fieldName);
 			$prop->setAccessible(true);
-			$prop->setValue($key, $field->valueOf($rs[$field->getSqlName()]));
+			$prop->setValue($key, $field->deserialize($rs[$field->getSqlName()]));
 		}
 
 		$d = $this->getDataBean();
@@ -163,7 +163,13 @@ class Node {
 			$fieldName = $field->getName();
 			$prop = $dClass->getProperty($fieldName);
 			$prop->setAccessible(true);
-			$prop->setValue($dataBean, $rs[$field->getSqlName()]);
+//			println($fieldName);
+//			try {
+//				println(gettype($field->deserialize($rs[$field->getSqlName()])));
+				$prop->setValue($dataBean, $field->deserialize($rs[$field->getSqlName()]));
+//			} catch (Exception $e) {
+//				echo gettype($e);
+//			}
 		}
 		return $dataBean;
 	}

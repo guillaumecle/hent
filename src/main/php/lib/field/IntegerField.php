@@ -7,10 +7,18 @@ class IntegerField extends BaseField {
 	}
 
 	/**
-	 * @param string $dbString
+	 * @param mixed $data
+	 * @return string
+	 */
+	public function serialize($data) {
+		return strval($data);
+	}
+
+	/**
+	 * @param int $dbString
 	 * @return mixed
 	 */
-	public function valueOf($dbString) {
+	public function deserialize($dbString) {
 		return intval($dbString);
 	}
 

@@ -30,7 +30,7 @@ class QueryBuilder {
 			$value .= '?';
 			$prop = $class->getProperty($field->getName());
 			$prop->setAccessible(true);
-			$params[] = $prop->getValue($dataBean->getKey());
+			$params[] = $field->serialize($prop->getValue($dataBean->getKey()));
 			if ($kIterator->hasNext()) {
 				$sql .= ', ';
 				$value .= ', ';
@@ -47,7 +47,7 @@ class QueryBuilder {
 			$value .= '?';
 			$prop = $class->getProperty($field->getName());
 			$prop->setAccessible(true);
-			$params[] = $prop->getValue($dataBean);
+			$params[] = $field->serialize($prop->getValue($dataBean));
 			if ($dIterator->hasNext()) {
 				$sql .= ', ';
 				$value .= ', ';
@@ -89,7 +89,7 @@ class QueryBuilder {
 			$sql .= $field->getEscapedSqlName() . '=?';
 			$prop = $class->getProperty($field->getName());
 			$prop->setAccessible(true);
-			$params[] = $prop->getValue($fieldable);
+			$params[] = $field->serialize($prop->getValue($fieldable));
 			if ($iterator->hasNext()) {
 				$sql .= ' and ';
 			}
@@ -113,7 +113,7 @@ class QueryBuilder {
 			$sql .= $field->getEscapedSqlName() . '=?';
 			$prop = $class->getProperty($field->getName());
 			$prop->setAccessible(true);
-			$params[] = $prop->getValue($dataBean);
+			$params[] = $field->serialize($prop->getValue($dataBean));
 			if ($iterator->hasNext()) {
 				$sql .= ', ';
 			}

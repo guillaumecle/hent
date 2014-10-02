@@ -25,7 +25,13 @@ interface Field {
 	 * @param string $dbString
 	 * @return mixed
 	 */
-	public function valueOf($dbString);
+	public function deserialize($dbString);
+
+	/**
+	 * @param mixed $data
+	 * @return string
+	 */
+	public function serialize($data);
 
 }
 

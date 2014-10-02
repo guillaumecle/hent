@@ -7,11 +7,19 @@ class DateField extends BaseField {
 	}
 
 	/**
+	 * @param DateTime $data
+	 * @return string
+	 */
+	public function serialize($data) {
+		return $data->format('Y-m-d H:i:s');
+	}
+
+	/**
 	 * @param string $dbString
 	 * @return mixed
 	 */
-	public function valueOf($dbString) {
-
+	public function deserialize($dbString) {
+		return new DateTime($dbString);
 	}
 
 }

@@ -2,25 +2,43 @@
 require_once 'BaseField.php';
 class TypedField extends  BaseField {
 
-	private $deserializerCallback;
+	/**
+	 * @var callable
+	 */
+	private $serializer;
+
+	/**
+	 * @var callable
+	 */
+	private $deserializer;
 
 	/**
 	 * @param string $name
 	 * @param ColumnType $type
-	 * @param callback $deserializerCallback
+	 * @param $serializer
+	 * @param $deserializer
 	 */
-	public function __construct($name, $type, $deserializerCallback) {
+	public function __construct($name, $type, $serializer, $deserializer) {
 		parent::__construct($name);
 		$this->setType($type);
-		$this->deserializerCallback = $deserializerCallback;
+		$this->serializer = $serializer;
+		$this->deserializer = $deserializer;
 	}
 
 	/**
 	 * @param string $dbString
 	 * @return mixed
 	 */
-	public function valueOf($dbString) {
-		return call_user_func($this->deserializerCallback, $dbString);
+	public function deserialize($dbString) {
+		return call_user_func($this->deserializer, $dbString);
+	}
+
+	/**
+	 * @param mixed $data
+	 * @return string
+	 */
+	public function serialize($data) {
+		return call_user_func($this->serializer, $data);
 	}
 
 }

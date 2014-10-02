@@ -26,7 +26,7 @@ class Test extends PHPUnit_Framework_TestCase {
 
 	public function testPutAndDelete() {
 		$id = time();
-		$data = new Example(new ExampleKey($id), 1);
+		$data = new Example(new ExampleKey($id), 1, new DateTime());
 		$before = count(self::$mr->exampleNode->all());
 
 		self::$mr->exampleNode->put($data);
@@ -40,18 +40,20 @@ class Test extends PHPUnit_Framework_TestCase {
 
 	public function testGet() {
 		$id = time();
-		$val = 5;
+		$val = 'hey';
+		$date = new DateTime();
+
 		/**
 		 * @var $key ExampleKey
 		 */
 		$key = new ExampleKey($id);
-		self::$mr->exampleNode->put(new Example($key, $val));
+		self::$mr->exampleNode->put(new Example($key, $val, new DateTime()));
 		/**
 		 * @var $d Example
 		 */
 		$d = self::$mr->exampleNode->get($key);
 		$this->assertNotNull($d);
-		$this->assertEquals($val, $d->getVal());
+		$this->assertSame($val, $d->getVal());
 		$this->assertSame($id, $d->getKey()->getId());
 
 		$falseKey = new ExampleKey(123456);
@@ -67,7 +69,7 @@ class Test extends PHPUnit_Framework_TestCase {
 		$id = time();
 		$val = 152;
 		$key = new ExampleKey($id);
-		$data = new Example($key, $val);
+		$data = new Example($key, $val, new DateTime());
 		self::$mr->exampleNode->put($data);
 
 		/**
@@ -112,5 +114,22 @@ class Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(count(self::$mr->exampleNode->getDataBean()->getKey()->getFields()), count($keyCol));
 	}
 
+	public function testFields() {
+		$id = time();
+		$val = 'hey';
+		$date = new DateTime();
+
+		/**
+		 * @var $key ExampleKey
+		 */
+		$key = new ExampleKey($id);
+		self::$mr->exampleNode->put(new Example($key, $val, new DateTime()));
+		/**
+		 * @var $d Example
+		 */
+		$d = self::$mr->exampleNode->get($key);
+		$this->assertEquals($date, $d->getDate());
+		self::$mr->exampleNode->delete($key);
+	}
 }
 
