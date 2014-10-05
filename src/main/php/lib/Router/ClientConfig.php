@@ -1,6 +1,6 @@
 <?php
 namespace Hent\Router;
 
-interface Router {
+interface ClientConfig {
 
 }

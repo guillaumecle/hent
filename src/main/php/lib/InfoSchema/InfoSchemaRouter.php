@@ -1,9 +1,12 @@
 <?php
 namespace Hent\InfoSchema;
 use Hent\Node\Node;
-use Hent\Router\Router;
+use Hent\Router\BaseMySqlConfig;
+use Hent\Router\BasMySqlConfig;
+use Hent\Router\MySqlConfig;
+use Hent\Router\MySqlRouter;
 
-class InfoSchemaRouter extends Router {
+class InfoSchemaRouter extends MySqlRouter {
 
 	/**
 	 * @var Node
@@ -30,13 +33,23 @@ class InfoSchemaRouter extends Router {
 	 */
 	public $indexes;
 
-	public function __construct() {
+	/**
+	 * @param MySqlConfig $config
+	 */
+	public function __construct(MySqlConfig $config) {
 		$this->schemata = parent::registerNode(new Node(new Schemata(), 'SCHEMATA'));
 		$this->tables = parent::registerNode(new Node(new Tables()));
 		$this->columns = parent::registerNode(new Node(new Columns()));
 		$this->keys = parent::registerNode((new Node(new KeyColumnUsage(), 'KEY_COLUMN_USAGE')));
 		$this->indexes = parent::registerNode((new Node(new Indexes(), 'STATISTICS')));
-		parent::__construct('information_schema', false);
+		$infoSchemaConfig = new BaseMySqlConfig(
+			$config->getHost(),
+			$config->getPort(),
+			$config->getUsername(),
+			$config->getPassword(),
+			'information_schema'
+		);
+		parent::__construct($infoSchemaConfig, false);
 	}
 
 }

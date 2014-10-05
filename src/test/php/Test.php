@@ -8,17 +8,18 @@ use Hent\InfoSchema\InfoSchemaRouter;
 use Hent\InfoSchema\KeyColumnsByTableAndName;
 use Hent\InfoSchema\Tables;
 use Hent\InfoSchema\TablesBySchemaLookup;
+use Hent\Router\BaseMySqlConfig;
 use PHPUnit_Framework_TestCase;
 
 class Test extends PHPUnit_Framework_TestCase {
 
 	/**
-	 * @var MyRouter
+	 * @var ExampleRouter
 	 */
 	private static $mr;
 
 	public static function setUpBeforeClass() {
-		self::$mr = new MyRouter();
+		self::$mr = new ExampleRouter();
 	}
 
 	public function testAllAndDelete() {
@@ -93,7 +94,7 @@ class Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testInfoSchema() {
-		$r = new InfoSchemaRouter();
+		$r = new InfoSchemaRouter(new ExampleRouterConfig());
 		/**
 		 * @var $tables Tables[]
 		 */
@@ -138,5 +139,6 @@ class Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($date, $d->getDate());
 		self::$mr->exampleNode->delete($key);
 	}
+
 }
 

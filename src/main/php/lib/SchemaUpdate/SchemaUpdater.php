@@ -12,6 +12,8 @@ use Hent\InfoSchema\SchemataByNameLookup;
 use Hent\InfoSchema\Tables;
 use Hent\InfoSchema\TablesBySchemaLookup;
 use Hent\Node\Node;
+use Hent\Router\MySqlConfig;
+use Hent\Router\MySqlRouter;
 use Hent\Router\Router;
 use Hent\Util;
 
@@ -20,7 +22,7 @@ class SchemaUpdater {
 	/**
 	 * @var InfoSchemaRouter
 	 */
-	private static $infoSchemaRouter;
+	private $infoSchemaRouter;
 
 	/**
 	 * @var Router
@@ -28,18 +30,17 @@ class SchemaUpdater {
 	private $router;
 
 	/**
-	 * @param $router Router
+	 * @param MySqlConfig $config
+	 * @param MySqlRouter $router
 	 */
-	public function __construct($router) {
-		if (!isset(self::$infoSchemaRouter)) {
-			self::$infoSchemaRouter = new InfoSchemaRouter();
-		}
+	public function __construct(MySqlConfig $config, MySqlRouter $router) {
+		$this->infoSchemaRouter = new InfoSchemaRouter($config);
 		$this->router = $router;
 	}
 
 	public function updateSchema() {
 		$this->checkAndCreateDatabase();
-		$databaseTables = self::$infoSchemaRouter->tables->lookup(new TablesBySchemaLookup($this->router->getSqlName()));
+		$databaseTables = $this->infoSchemaRouter->tables->lookup(new TablesBySchemaLookup($this->router->getSqlName()));
 		$tableNames = [];
 		/**
 		 * @var $table Tables
@@ -73,7 +74,7 @@ class SchemaUpdater {
 		/**
 		 * @var $cols Columns[]
 		 */
-		$cols = self::$infoSchemaRouter->columns->lookup(new ColumnsByTableLookup($this->router->getSqlName(), $node->getSqlName()));
+		$cols = $this->infoSchemaRouter->columns->lookup(new ColumnsByTableLookup($this->router->getSqlName(), $node->getSqlName()));
 		$filedNames = [];
 		/**
 		 * @var $fields Field[];
@@ -127,7 +128,7 @@ class SchemaUpdater {
 		/**
 		 * @var KeyColumnUsage[] $keyCols
 		 */
-		$keyCols = self::$infoSchemaRouter->keys->lookup($keyLookup);
+		$keyCols = $this->infoSchemaRouter->keys->lookup($keyLookup);
 		$dbKeys = [];
 		foreach ($keyCols as $col) {
 			$dbKeys[$col->getPosition() - 1] = $col->getColumn();
@@ -198,7 +199,7 @@ class SchemaUpdater {
 		Util::println('========= will do =========');
 		Util::println($sql);
 		$start = microtime(true);
-		self::$infoSchemaRouter->getConnection()->query($sql);
+		$this->infoSchemaRouter->getConnection()->query($sql);
 		$end = microtime(true);
 		$duration = round(1000 * ($end - $start));
 		Util::println('======= done (' . $duration . 'ms) =======');
@@ -225,7 +226,7 @@ class SchemaUpdater {
 	}
 
 	private function checkAndCreateDatabase() {
-		$databases = self::$infoSchemaRouter->schemata->lookup(new SchemataByNameLookup($this->router->getSqlName()));
+		$databases = $this->infoSchemaRouter->schemata->lookup(new SchemataByNameLookup($this->router->getSqlName()));
 		if (count($databases) == 0) {
 			$sql = 'create database ' . $this->router->getSqlName();
 			$this->doQuery($sql);
