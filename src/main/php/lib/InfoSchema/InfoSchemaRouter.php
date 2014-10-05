@@ -2,7 +2,6 @@
 namespace Hent\InfoSchema;
 use Hent\Node\Node;
 use Hent\Router\BaseMySqlConfig;
-use Hent\Router\BasMySqlConfig;
 use Hent\Router\MySqlConfig;
 use Hent\Router\MySqlRouter;
 

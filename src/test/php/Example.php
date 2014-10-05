@@ -1,8 +1,8 @@
 <?php
 namespace HentTest;
 use DateTime;
-use Hent\DataBean\Databean;
-use Hent\DataBean\Lookup;
+use Hent\Databean\Databean;
+use Hent\Databean\Lookup;
 use Hent\Field\DateField;
 use Hent\Field\Field;
 use Hent\Field\StringField;

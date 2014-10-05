@@ -1,6 +1,6 @@
 <?php
 namespace HentTest;
-use Hent\DataBean\Key;
+use Hent\Databean\Key;
 use Hent\Field\IntegerField;
 use Hent\Field\StringField;
 

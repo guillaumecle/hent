@@ -2,8 +2,8 @@
 namespace Hent\Query;
 use ArrayIterator;
 use CachingIterator;
-use Hent\DataBean\Databean;
-use Hent\DataBean\Fieldable;
+use Hent\Databean\Databean;
+use Hent\Databean\Fieldable;
 use Hent\Field\Field;
 use Hent\Node\Node;
 use ReflectionClass;
@@ -20,15 +20,15 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param $dataBean Databean
+	 * @param $databean Databean
 	 * @return PreparedQuery
 	 */
-	public function getInsert(Databean $dataBean) {
+	public function getInsert(Databean $databean) {
 		$sql = 'insert into ' . $this->tableName . ' (';
 		$value = ' (';
 		$params = [];
-		$kIterator = new CachingIterator(new ArrayIterator($dataBean->getKey()->getFields()));
-		$class = new ReflectionClass(get_class($dataBean->getKey()));
+		$kIterator = new CachingIterator(new ArrayIterator($databean->getKey()->getFields()));
+		$class = new ReflectionClass(get_class($databean->getKey()));
 		/**
 		 * @var $field Field
 		 */
@@ -37,14 +37,14 @@ class QueryBuilder {
 			$value .= '?';
 			$prop = $class->getProperty($field->getName());
 			$prop->setAccessible(true);
-			$params[] = $field->serialize($prop->getValue($dataBean->getKey()));
+			$params[] = $field->serialize($prop->getValue($databean->getKey()));
 			if ($kIterator->hasNext()) {
 				$sql .= ', ';
 				$value .= ', ';
 			}
 		}
-		$dIterator = new CachingIterator(new ArrayIterator($dataBean->getFields()));
-		$class = new ReflectionClass(get_class($dataBean));
+		$dIterator = new CachingIterator(new ArrayIterator($databean->getFields()));
+		$class = new ReflectionClass(get_class($databean));
 		if ($dIterator->hasNext()) {
 			$sql .= ', ';
 			$value .= ', ';
@@ -54,7 +54,7 @@ class QueryBuilder {
 			$value .= '?';
 			$prop = $class->getProperty($field->getName());
 			$prop->setAccessible(true);
-			$params[] = $field->serialize($prop->getValue($dataBean));
+			$params[] = $field->serialize($prop->getValue($databean));
 			if ($dIterator->hasNext()) {
 				$sql .= ', ';
 				$value .= ', ';
@@ -105,13 +105,13 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param $dataBean Databean
+	 * @param $databean Databean
 	 * @return PreparedQuery
 	 */
-	public function getUpdate($dataBean) {
+	public function getUpdate($databean) {
 		$sql = 'update ' . $this->tableName . ' set ';
-		$iterator = new CachingIterator(new ArrayIterator($dataBean->getFields()));
-		$class = new ReflectionClass(get_class($dataBean));
+		$iterator = new CachingIterator(new ArrayIterator($databean->getFields()));
+		$class = new ReflectionClass(get_class($databean));
 		$params = [];
 		/**
 		 * @var $field Field
@@ -120,12 +120,12 @@ class QueryBuilder {
 			$sql .= $field->getEscapedSqlName() . '=?';
 			$prop = $class->getProperty($field->getName());
 			$prop->setAccessible(true);
-			$params[] = $field->serialize($prop->getValue($dataBean));
+			$params[] = $field->serialize($prop->getValue($databean));
 			if ($iterator->hasNext()) {
 				$sql .= ', ';
 			}
 		}
-		$where = $this->getWhereClause($dataBean->getKey());
+		$where = $this->getWhereClause($databean->getKey());
 		return new PreparedQuery(array_merge($params, $where->getData()), $sql . $where->getSql());
 	}
 

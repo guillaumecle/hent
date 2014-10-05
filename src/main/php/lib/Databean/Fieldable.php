@@ -1,5 +1,5 @@
 <?php
-namespace Hent\DataBean;
+namespace Hent\Databean;
 use Hent\Field\Field;
 
 interface Fieldable {

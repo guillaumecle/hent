@@ -80,11 +80,11 @@ class SchemaUpdater {
 		 * @var $fields Field[];
 		 */
 		$fields =[];
-		foreach ($node->getDataBean()->getKey()->getFields() as $field) {
+		foreach ($node->getDatabean()->getKey()->getFields() as $field) {
 			$filedNames[] = $field->getSqlName();
 			$fields[$field->getSqlName()] = $field;
 		}
-		foreach ($node->getDataBean()->getFields() as $field) {
+		foreach ($node->getDatabean()->getFields() as $field) {
 			$filedNames[] = $field->getSqlName();
 			$fields[$field->getSqlName()] = $field;
 		}
@@ -133,7 +133,7 @@ class SchemaUpdater {
 		foreach ($keyCols as $col) {
 			$dbKeys[$col->getPosition() - 1] = $col->getColumn();
 		}
-		$pkFields = $node->getDataBean()->getKey()->getFields();
+		$pkFields = $node->getDatabean()->getKey()->getFields();
 		$pkFieldsName = [];
 		foreach ($pkFields as $field) {
 			$pkFieldsName[] = $field->getSqlName();
@@ -166,8 +166,8 @@ class SchemaUpdater {
 	 */
 	private function create($node) {
 		$sql = 'create table ' . $this->router->getSqlName() . '.' . $node->getEscapedSqlName() . '(';
-		$pkFields = $node->getDataBean()->getKey()->getFields();
-		$fields = array_merge($pkFields, $node->getDataBean()->getFields());
+		$pkFields = $node->getDatabean()->getKey()->getFields();
+		$fields = array_merge($pkFields, $node->getDatabean()->getFields());
 		$iterator = new CachingIterator(new ArrayIterator($fields));
 		/**
 		 * @var $field Field

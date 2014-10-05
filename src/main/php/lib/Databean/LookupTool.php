@@ -1,7 +1,8 @@
 <?php
-namespace Hent\DataBean;
+namespace Hent\Databean;
 use CachingIterator;
 use ArrayIterator;
+use Hent\Field\Field;
 
 class LookupTool {
 
@@ -12,6 +13,9 @@ class LookupTool {
 	public static function getIndexName($lookup) {
 		$indexName = 'index_';
 		$fields = new CachingIterator(new ArrayIterator($lookup->getFields()));
+		/**
+		 * @var Field $field
+		 */
 		foreach ($fields as $field) {
 			$indexName .= $field->getName();
 			if ($fields->hasNext()) {

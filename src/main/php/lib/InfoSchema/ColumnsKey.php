@@ -1,6 +1,6 @@
 <?php
 namespace Hent\InfoSchema;
-use Hent\DataBean\Key;
+use Hent\Databean\Key;
 
 class ColumnsKey implements Key {
 

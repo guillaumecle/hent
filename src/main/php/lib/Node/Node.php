@@ -1,10 +1,10 @@
 <?php
 namespace Hent\Node;
 use Exception;
-use Hent\DataBean\Databean;
-use Hent\DataBean\Key;
-use Hent\DataBean\Lookup;
-use Hent\DataBean\LookupTool;
+use Hent\Databean\Databean;
+use Hent\Databean\Key;
+use Hent\Databean\Lookup;
+use Hent\Databean\LookupTool;
 use Hent\Query\QueryBuilder;
 use PDO;
 use ReflectionClass;
@@ -24,18 +24,18 @@ class Node {
 	/**
 	 * @var Databean
 	 */
-	private $dataBean;
+	private $databean;
 	/**
 	 * @var QueryBuilder
 	 */
 	private $builder;
 
 	/**
-	 * @param $dataBean Databean
+	 * @param $databean Databean
 	 * @param $sqlName string
 	 */
-	public function __construct($dataBean, $sqlName = null) {
-		$this->dataBean = $dataBean;
+	public function __construct($databean, $sqlName = null) {
+		$this->databean = $databean;
 		if (!empty($sqlName)) {
 			$this->sqlName = $sqlName;
 		}
@@ -49,14 +49,14 @@ class Node {
 		if (isset($this->sqlName)) {
 			return $this->sqlName;
 		}
-		return (new ReflectionClass(get_class($this->dataBean)))->getShortName();
+		return (new ReflectionClass(get_class($this->databean)))->getShortName();
 	}
 
 	/**
 	 * @return Databean
 	 */
-	public function getDataBean() {
-		return $this->dataBean;
+	public function getDatabean() {
+		return $this->databean;
 	}
 
 	/**
@@ -81,20 +81,20 @@ class Node {
 	}
 
 	/**
-	 * @param $dataBean Databean
+	 * @param $databean Databean
 	 */
-	public function put(Databean $dataBean) {
-		$key = $dataBean->getKey();
-		$inDdDataBean = $this->get($key);
-		if (isset($inDdDataBean)) {
-			if(count($dataBean->getFields()) == 0){
+	public function put(Databean $databean) {
+		$key = $databean->getKey();
+		$inDdDatabean = $this->get($key);
+		if (isset($inDdDatabean)) {
+			if(count($databean->getFields()) == 0){
 				return;
 			}
-			$pQuery = $this->builder->getUpdate($dataBean);
+			$pQuery = $this->builder->getUpdate($databean);
 			$st = $this->co->prepare($pQuery->getSql());
 			$st->execute($pQuery->getData());
 		} else {
-			$pQuery = $this->builder->getInsert($dataBean);
+			$pQuery = $this->builder->getInsert($databean);
 			$st = $this->co->prepare($pQuery->getSql());
 			$st->execute($pQuery->getData());
 		}
@@ -109,7 +109,7 @@ class Node {
 		$st = $this->co->query($sql);
 		$res = [];
 		while ($rs = $st->fetch()) {
-			$res[] = $this->dataBeanFromResultSet($rs);
+			$res[] = $this->databeanFromResultSet($rs);
 		}
 		return $res;
 	}
@@ -125,7 +125,7 @@ class Node {
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());
 		if ($rs = $st->fetch()) {
-			return $this->dataBeanFromResultSet($rs);
+			return $this->databeanFromResultSet($rs);
 		}
 		return null;
 	}
@@ -141,7 +141,7 @@ class Node {
 		$st->execute($pQuery->getData());
 		$res = [];
 		while ($rs = $st->fetch()) {
-			$res[] = $this->dataBeanFromResultSet($rs);
+			$res[] = $this->databeanFromResultSet($rs);
 		}
 		return $res;
 	}
@@ -150,8 +150,8 @@ class Node {
 	 * @param $rs
 	 * @return Databean
 	 */
-	private function dataBeanFromResultSet($rs) {
-		$k = $this->getDataBean()->getKey();
+	private function databeanFromResultSet($rs) {
+		$k = $this->getDatabean()->getKey();
 		$kFields = $k->getFields();
 		$kClass = new ReflectionClass(get_class($k));
 		$key = $kClass->newInstanceWithoutConstructor();
@@ -162,20 +162,20 @@ class Node {
 			$prop->setValue($key, $field->deserialize($rs[$field->getSqlName()]));
 		}
 
-		$d = $this->getDataBean();
+		$d = $this->getDatabean();
 		$dFields = $d->getFields();
 		$dClass = new ReflectionClass(get_class($d));
-		$dataBean = $dClass->newInstanceWithoutConstructor();
+		$databean = $dClass->newInstanceWithoutConstructor();
 		$prop = $dClass->getProperty('key');
 		$prop->setAccessible(true);
-		$prop->setValue($dataBean, $key);
+		$prop->setValue($databean, $key);
 		foreach($dFields as $field) {
 			$fieldName = $field->getName();
 			$prop = $dClass->getProperty($fieldName);
 			$prop->setAccessible(true);
-			$prop->setValue($dataBean, $field->deserialize($rs[$field->getSqlName()]));
+			$prop->setValue($databean, $field->deserialize($rs[$field->getSqlName()]));
 		}
-		return $dataBean;
+		return $databean;
 	}
 
 	/**
@@ -193,8 +193,8 @@ class Node {
 	 * @throws Exception
 	 */
 	private function checkKey(Key $key) {
-		if (!is_a($key, get_class($this->getDataBean()->getKey()))) {
-			throw new Exception('Doesn\'t match key class (expected:' . get_class($this->getDataBean()->getKey()) . ', given: ' . get_class($key) . ')');
+		if (!is_a($key, get_class($this->getDatabean()->getKey()))) {
+			throw new Exception('Doesn\'t match key class (expected:' . get_class($this->getDatabean()->getKey()) . ', given: ' . get_class($key) . ')');
 		}
 	}
 
@@ -206,7 +206,7 @@ class Node {
 		$indexNames = $this->getIndexNames();
 		$indexName = LookupTool::getIndexName($lookup);
 		if (!in_array($indexName, $indexNames)) {
-			throw new Exception('The lookup "' . $indexName . '" is not register as an index for the Databean ' . get_class($this->getDataBean()));
+			throw new Exception('The lookup "' . $indexName . '" is not register as an index for the Databean ' . get_class($this->getDatabean()));
 		}
 	}
 
@@ -216,7 +216,7 @@ class Node {
 	private function getIndexNames() {
 		if (!isset($this->indexNames)) {
 			$this->indexNames = [];
-			foreach ($this->getDataBean()->getIndexes() as $index) {
+			foreach ($this->getDatabean()->getIndexes() as $index) {
 				$this->indexNames[] = LookupTool::getIndexName($index);
 			}
 		}

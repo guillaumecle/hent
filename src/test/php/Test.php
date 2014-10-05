@@ -111,12 +111,12 @@ class Test extends PHPUnit_Framework_TestCase {
 		$this->assertNotNull($columns);
 		$this->assertEquals(self::$mr->getSqlName(), $columns[0]->getSchema());
 
-		$nb = count(self::$mr->exampleNode->getDataBean()->getFields()) + count(self::$mr->exampleNode->getDataBean()->getKey()->getFields());
+		$nb = count(self::$mr->exampleNode->getDatabean()->getFields()) + count(self::$mr->exampleNode->getDatabean()->getKey()->getFields());
 		$this->assertEquals($nb, count($columns));
 
 		$keyLookup = new KeyColumnsByTableAndName(self::$mr->getSqlName(), self::$mr->exampleNode->getSqlName(), 'PRIMARY');
 		$keyCol = $r->keys->lookup($keyLookup);
-		$this->assertEquals(count(self::$mr->exampleNode->getDataBean()->getKey()->getFields()), count($keyCol));
+		$this->assertEquals(count(self::$mr->exampleNode->getDatabean()->getKey()->getFields()), count($keyCol));
 
 		$indexesLookup = new IndexesByTable(self::$mr->getSqlName(), self::$mr->exampleNode->getSqlName());
 		$indexesCols = $r->indexes->lookup($indexesLookup);

@@ -1,5 +1,5 @@
 <?php
-namespace Hent\DataBean;
+namespace Hent\Databean;
 
 interface Key extends Fieldable {
 

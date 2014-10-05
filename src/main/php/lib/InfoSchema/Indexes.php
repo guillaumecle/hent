@@ -1,8 +1,8 @@
 <?php
 
 namespace Hent\InfoSchema;
-use Hent\DataBean\Databean;
-use Hent\DataBean\Lookup;
+use Hent\Databean\Databean;
+use Hent\Databean\Lookup;
 use Hent\Field\Field;
 use Hent\Field\IntegerField;
 use Hent\Field\StringField;
