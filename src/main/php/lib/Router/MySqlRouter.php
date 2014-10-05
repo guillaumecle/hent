@@ -84,7 +84,6 @@ abstract class MySqlRouter implements Router {
 		$password = $config->getPassword();
 		$connection = new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname='.$this->getSqlName(), $username, $password);
 		foreach ($config->getAttributes() as $attribute => $value) {
-			var_dump($attribute, $value);
 			$connection->setAttribute($attribute, $value);
 		}
 		return $connection;

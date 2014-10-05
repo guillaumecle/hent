@@ -15,7 +15,6 @@ class ExampleRouter extends MySqlRouter {
 	public function __construct() {
 		$this->exampleNode = parent::registerNode(new Node(new Example(new ExampleKey(null, null), null, null)));
 		$config = BaseMySqlConfig::createFromJsonFile('../database.json');
-//		$config = new ExampleRouterConfig();
 		parent::__construct($config);
 	}
 
