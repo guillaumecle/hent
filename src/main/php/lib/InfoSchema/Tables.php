@@ -1,9 +1,11 @@
 <?php
-require_once __DIR__.'/../databean/DataBean.php';
-require_once __DIR__.'/../databean/Lookup.php';
-require_once __DIR__ . '/../field/StringField.php';
-require_once 'TablesKey.php';
-class Tables implements DataBean {
+namespace Hent\InfoSchema;
+use Hent\DataBean\Databean;
+use Hent\DataBean\Lookup;
+use Hent\Field\Field;
+use Hent\Field\StringField;
+
+class Tables implements Databean {
 
 	/**
 	 * @var TablesKey
@@ -57,6 +59,9 @@ class Tables implements DataBean {
 		return $this->engine;
 	}
 
+	/**
+	 * @return Field[]
+	 */
 	public function getFields() {
 		return [
 			(new StringField('name'))->setSqlName('TABLE_NAME'),

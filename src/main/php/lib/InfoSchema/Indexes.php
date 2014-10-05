@@ -1,6 +1,13 @@
 <?php
-require_once 'IndexesKey.php';
-class Indexes implements DataBean {
+
+namespace Hent\InfoSchema;
+use Hent\DataBean\Databean;
+use Hent\DataBean\Lookup;
+use Hent\Field\Field;
+use Hent\Field\IntegerField;
+use Hent\Field\StringField;
+
+class Indexes implements Databean {
 
 	/**
 	 * @var IndexesKey

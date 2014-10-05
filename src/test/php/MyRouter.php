@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__.'/../../main/php/lib/router/Router.php';
+namespace HentTest;
+use Hent\Node\Node;
+use Hent\Router\Router;
+
 class MyRouter extends Router {
 
 	/**

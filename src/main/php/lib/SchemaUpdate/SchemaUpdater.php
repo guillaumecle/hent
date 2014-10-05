@@ -1,4 +1,20 @@
 <?php
+namespace Hent\SchemaUpdate;
+use ArrayIterator;
+use CachingIterator;
+use Hent\Field\Field;
+use Hent\InfoSchema\Columns;
+use Hent\InfoSchema\ColumnsByTableLookup;
+use Hent\InfoSchema\InfoSchemaRouter;
+use Hent\InfoSchema\KeyColumnsByTableAndName;
+use Hent\InfoSchema\KeyColumnUsage;
+use Hent\InfoSchema\SchemataByNameLookup;
+use Hent\InfoSchema\Tables;
+use Hent\InfoSchema\TablesBySchemaLookup;
+use Hent\Node\Node;
+use Hent\Router\Router;
+use Hent\Util;
+
 class SchemaUpdater {
 
 	/**
@@ -179,13 +195,13 @@ class SchemaUpdater {
 	 * @param $type
 	 */
 	private function doQuery($sql, $type = null) {
-		println('========= will do =========');
-		println($sql);
+		Util::println('========= will do =========');
+		Util::println($sql);
 		$start = microtime(true);
 		self::$infoSchemaRouter->getConnection()->query($sql);
 		$end = microtime(true);
 		$duration = round(1000 * ($end - $start));
-		println('======= done (' . $duration . 'ms) =======');
+		Util::println('======= done (' . $duration . 'ms) =======');
 	}
 
 	/**

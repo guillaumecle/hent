@@ -1,7 +1,13 @@
 <?php
-require_once __DIR__.'/../databean/DataBean.php';
-require_once 'KeyColumnUsageKey.php';
-class KeyColumnUsage implements DataBean {
+namespace Hent\InfoSchema;
+use Hent\DataBean\Databean;
+use Hent\DataBean\Key;
+use Hent\DataBean\Lookup;
+use Hent\Field\Field;
+use Hent\Field\IntegerField;
+use Hent\Field\StringField;
+
+class KeyColumnUsage implements Databean {
 
 	private $key;
 

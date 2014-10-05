@@ -1,8 +1,13 @@
 <?php
-require_once __DIR__.'/../../main/php/lib/databean/DataBean.php';
-require_once __DIR__.'/../../main/php/lib/field/DateField.php';
-require_once 'ExampleKey.php';
-class Example implements DataBean {
+namespace HentTest;
+use DateTime;
+use Hent\DataBean\Databean;
+use Hent\DataBean\Lookup;
+use Hent\Field\DateField;
+use Hent\Field\Field;
+use Hent\Field\StringField;
+
+class Example implements Databean {
 
 	/**
 	 * @var ExampleKey

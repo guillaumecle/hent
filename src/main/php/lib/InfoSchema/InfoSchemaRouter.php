@@ -1,10 +1,8 @@
 <?php
-require_once __DIR__.'/../router/Router.php';
-require_once 'Schemata.php';
-require_once 'Tables.php';
-require_once 'Columns.php';
-require_once 'KeyColumnUsage.php';
-require_once 'Indexes.php';
+namespace Hent\InfoSchema;
+use Hent\Node\Node;
+use Hent\Router\Router;
+
 class InfoSchemaRouter extends Router {
 
 	/**

@@ -1,4 +1,8 @@
 <?php
+namespace Hent\Field;
+
+use DateTime;
+
 class DateField extends BaseField {
 
 	public function __construct($name) {

@@ -1,4 +1,6 @@
 <?php
+namespace Hent\Field;
+
 interface Field {
 
 	/**

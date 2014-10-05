@@ -1,9 +1,11 @@
 <?php
-require_once __DIR__.'/../databean/DataBean.php';
-require_once __DIR__.'/../databean/Lookup.php';
-require_once __DIR__ . '/../field/StringField.php';
-require_once 'ColumnsKey.php';
-class Columns implements DataBean {
+namespace Hent\InfoSchema;
+use Hent\DataBean\Databean;
+use Hent\DataBean\Lookup;
+use Hent\Field\Field;
+use Hent\Field\StringField;
+
+class Columns implements Databean {
 
 	/**
 	 * @var ColumnsKey

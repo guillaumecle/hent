@@ -1,5 +1,6 @@
 <?php
-require_once 'BaseField.php';
+namespace Hent\Field;
+
 class TypedField extends  BaseField {
 
 	/**

@@ -1,4 +1,8 @@
 <?php
+namespace Hent\DataBean;
+use CachingIterator;
+use ArrayIterator;
+
 class LookupTool {
 
 	/**

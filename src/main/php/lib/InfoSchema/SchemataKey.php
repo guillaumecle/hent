@@ -1,5 +1,8 @@
 <?php
-require_once __DIR__ . '/../databean/Key.php';
+namespace Hent\InfoSchema;
+use Hent\DataBean\Key;
+use Hent\Field\Field;
+
 class SchemataKey implements Key {
 
 	/**

@@ -1,6 +1,13 @@
 <?php
-require_once __DIR__ . '/../util.php';
-require_once 'PreparedQuery.php';
+namespace Hent\Query;
+use ArrayIterator;
+use CachingIterator;
+use Hent\DataBean\Databean;
+use Hent\DataBean\Fieldable;
+use Hent\Field\Field;
+use Hent\Node\Node;
+use ReflectionClass;
+
 class QueryBuilder {
 
 	private $tableName;
@@ -13,10 +20,10 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param $dataBean DataBean
+	 * @param $dataBean Databean
 	 * @return PreparedQuery
 	 */
-	public function getInsert(DataBean $dataBean) {
+	public function getInsert(Databean $dataBean) {
 		$sql = 'insert into ' . $this->tableName . ' (';
 		$value = ' (';
 		$params = [];
@@ -98,7 +105,7 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param $dataBean DataBean
+	 * @param $dataBean Databean
 	 * @return PreparedQuery
 	 */
 	public function getUpdate($dataBean) {

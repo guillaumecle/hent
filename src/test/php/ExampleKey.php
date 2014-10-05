@@ -1,6 +1,9 @@
 <?php
-require_once __DIR__.'/../../main/php/lib/databean/Key.php';
-require_once __DIR__.'/../../main/php/lib/field/IntegerField.php';
+namespace HentTest;
+use Hent\DataBean\Key;
+use Hent\Field\IntegerField;
+use Hent\Field\StringField;
+
 class ExampleKey implements Key {
 
 	/**

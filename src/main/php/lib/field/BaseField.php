@@ -1,5 +1,5 @@
 <?php
-require_once 'Field.php';
+namespace Hent\Field;
 abstract class BaseField implements Field {
 
 	/**
@@ -19,6 +19,7 @@ abstract class BaseField implements Field {
 
 	/**
 	 * @param $name string
+	 * @param ColumnType $type
 	 */
 	public function __construct($name, $type) {
 		$this->fieldName = $name;

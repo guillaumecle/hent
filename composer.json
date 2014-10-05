@@ -9,5 +9,15 @@
 	],
 	"require-dev": {
 		"phpunit/phpunit": "3.7.37"
+	},
+	"autoload": {
+		"psr-4": {
+			"Hent\\" : "src/main/php/lib"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"HentTest\\" : "src/test/php/"
+		}
 	}
 }

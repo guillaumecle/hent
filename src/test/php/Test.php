@@ -1,9 +1,15 @@
 <?php
-require_once __DIR__ . '/../../main/php/lib/util.php';
-require_once __DIR__.'/../../main/php/lib/node/Node.php';
-require_once __DIR__.'/../../main/php/lib/InfoSchema/InfoSchemaRouter.php';
-require_once 'MyRouter.php';
-require_once 'Example.php';
+namespace HentTest;
+use DateTime;
+use Hent\InfoSchema\Columns;
+use Hent\InfoSchema\ColumnsByTableLookup;
+use Hent\InfoSchema\IndexesByTable;
+use Hent\InfoSchema\InfoSchemaRouter;
+use Hent\InfoSchema\KeyColumnsByTableAndName;
+use Hent\InfoSchema\Tables;
+use Hent\InfoSchema\TablesBySchemaLookup;
+use PHPUnit_Framework_TestCase;
+
 class Test extends PHPUnit_Framework_TestCase {
 
 	/**

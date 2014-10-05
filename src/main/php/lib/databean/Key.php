@@ -1,5 +1,6 @@
 <?php
-require_once 'Fieldable.php';
+namespace Hent\DataBean;
+
 interface Key extends Fieldable {
 
 }

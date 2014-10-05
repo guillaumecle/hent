@@ -1,6 +1,6 @@
 <?php
-require_once 'BaseField.php';
-require_once 'ColumnType.php';
+namespace Hent\Field;
+
 class StringField extends BaseField {
 
 	public function __construct($name, $size = 11) {

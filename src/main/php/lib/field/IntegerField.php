@@ -1,4 +1,6 @@
 <?php
+namespace Hent\Field;
+
 class IntegerField extends BaseField {
 
 	public function __construct($name, $size = 11) {

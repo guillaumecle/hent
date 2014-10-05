@@ -1,7 +1,14 @@
 <?php
-require_once __DIR__.'/../databean/DataBean.php';
-require_once __DIR__.'/../query/QueryBuilder.php';
-require_once __DIR__.'/../databean/LookupTool.php';
+namespace Hent\Node;
+use Exception;
+use Hent\DataBean\Databean;
+use Hent\DataBean\Key;
+use Hent\DataBean\Lookup;
+use Hent\DataBean\LookupTool;
+use Hent\Query\QueryBuilder;
+use PDO;
+use ReflectionClass;
+
 class Node {
 
 	/**
@@ -15,7 +22,7 @@ class Node {
 	private $co;
 
 	/**
-	 * @var DataBean
+	 * @var Databean
 	 */
 	private $dataBean;
 	/**
@@ -24,7 +31,7 @@ class Node {
 	private $builder;
 
 	/**
-	 * @param $dataBean DataBean
+	 * @param $dataBean Databean
 	 * @param $sqlName string
 	 */
 	public function __construct($dataBean, $sqlName = null) {
@@ -42,11 +49,11 @@ class Node {
 		if (isset($this->sqlName)) {
 			return $this->sqlName;
 		}
-		return get_class($this->dataBean);
+		return (new ReflectionClass(get_class($this->dataBean)))->getShortName();
 	}
 
 	/**
-	 * @return DataBean
+	 * @return Databean
 	 */
 	public function getDataBean() {
 		return $this->dataBean;
@@ -74,9 +81,9 @@ class Node {
 	}
 
 	/**
-	 * @param $dataBean DataBean
+	 * @param $dataBean Databean
 	 */
-	public function put(DataBean $dataBean) {
+	public function put(Databean $dataBean) {
 		$key = $dataBean->getKey();
 		$inDdDataBean = $this->get($key);
 		if (isset($inDdDataBean)) {
@@ -92,7 +99,7 @@ class Node {
 
 	/**
 	 * Mainly for dev purpose
-	 * @return DataBean[]
+	 * @return Databean[]
 	 */
 	public function all() {
 		$sql = 'select * from ' . $this->getEscapedSqlName();
@@ -106,7 +113,7 @@ class Node {
 
 	/**
 	 * @param $key Key
-	 * @return DataBean|null
+	 * @return Databean|null
 	 * @throws Exception
 	 */
 	public function get(Key $key) {
@@ -122,9 +129,9 @@ class Node {
 
 	/**
 	 * @param Lookup $lookup
-	 * @return DataBean[]
+	 * @return Databean[]
 	 */
-	public function lookup(Lookup $lookup) {
+	public function lookup($lookup) {
 		$this->checkLookup($lookup);
 		$pQuery = $this->builder->getSelect($lookup);
 		$st = $this->co->prepare($pQuery->getSql());
@@ -138,7 +145,7 @@ class Node {
 
 	/**
 	 * @param $rs
-	 * @return DataBean
+	 * @return Databean
 	 */
 	private function dataBeanFromResultSet($rs) {
 		$k = $this->getDataBean()->getKey();
@@ -163,13 +170,7 @@ class Node {
 			$fieldName = $field->getName();
 			$prop = $dClass->getProperty($fieldName);
 			$prop->setAccessible(true);
-//			println($fieldName);
-//			try {
-//				println(gettype($field->deserialize($rs[$field->getSqlName()])));
-				$prop->setValue($dataBean, $field->deserialize($rs[$field->getSqlName()]));
-//			} catch (Exception $e) {
-//				echo gettype($e);
-//			}
+			$prop->setValue($dataBean, $field->deserialize($rs[$field->getSqlName()]));
 		}
 		return $dataBean;
 	}
@@ -202,7 +203,7 @@ class Node {
 		$indexNames = $this->getIndexNames();
 		$indexName = LookupTool::getIndexName($lookup);
 		if (!in_array($indexName, $indexNames)) {
-			throw new Exception('The lookup "' . $indexName . '" is not register as an index for the databean ' . get_class($this->getDataBean()));
+			throw new Exception('The lookup "' . $indexName . '" is not register as an index for the Databean ' . get_class($this->getDataBean()));
 		}
 	}
 

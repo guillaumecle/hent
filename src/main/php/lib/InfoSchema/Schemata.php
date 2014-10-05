@@ -1,9 +1,11 @@
 <?php
-require_once __DIR__ . '/../databean/DataBean.php';
-require_once __DIR__ . '/../databean/Lookup.php';
-require_once __DIR__ . '/../field/StringField.php';
-require_once 'SchemataKey.php';
-class Schemata implements DataBean {
+namespace Hent\InfoSchema;
+use Hent\DataBean\Databean;
+use Hent\DataBean\Lookup;
+use Hent\Field\Field;
+use Hent\Field\StringField;
+
+class Schemata implements Databean {
 
 	/**
 	 * @var SchemataKey

@@ -1,6 +1,10 @@
 <?php
-require_once __DIR__ . '/../util.php';
-require_once __DIR__ . '/../SchemaUpdate/SchemaUpdater.php';
+namespace Hent\Router;
+use Exception;
+use Hent\Node\Node;
+use Hent\SchemaUpdate\SchemaUpdater;
+use PDO;
+
 abstract class Router {
 
 	/**
