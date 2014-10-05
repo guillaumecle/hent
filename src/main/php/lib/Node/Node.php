@@ -87,6 +87,9 @@ class Node {
 		$key = $dataBean->getKey();
 		$inDdDataBean = $this->get($key);
 		if (isset($inDdDataBean)) {
+			if(count($dataBean->getFields()) == 0){
+				return;
+			}
 			$pQuery = $this->builder->getUpdate($dataBean);
 			$st = $this->co->prepare($pQuery->getSql());
 			$st->execute($pQuery->getData());
