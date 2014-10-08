@@ -3,7 +3,7 @@ namespace Hent\Field;
 
 class StringField extends BaseField {
 
-	public function __construct($name, $size = 11) {
+	public function __construct($name, $size = 255) {
 		parent::__construct($name, ColumnType::string($size));
 	}
 
