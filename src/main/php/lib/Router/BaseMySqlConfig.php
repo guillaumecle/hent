@@ -1,6 +1,8 @@
 <?php
 namespace Hent\Router;
 
+use Exception;
+
 class BaseMySqlConfig extends MySqlConfig {
 
 	/**
@@ -94,17 +96,31 @@ class BaseMySqlConfig extends MySqlConfig {
 
 	/**
 	 * @param string $filename
+	 * @throws Exception
 	 * @return MySqlConfig
 	 */
 	public static function createFromJsonFile($filename) {
 		$fileContent = file_get_contents($filename);
+		if ($fileContent === false) {
+			throw new Exception('Can not find database configuration json file : ' . $filename);
+		}
 		$jsonContent = json_decode($fileContent, true);
+		if ($jsonContent === null) {
+			throw new Exception('Can not decode database configuration json file : ' . $filename);
+		}
+		$requiredParams = ['username', 'password', 'name'];
+		foreach ($requiredParams as $requiredParam) {
+			if (!isset($jsonContent[$requiredParam])) {
+				throw new Exception('Missing "' . $requiredParam  . '" in database configuration json file ' . $filename);
+			}
+		}
+
 		return new BaseMySqlConfig(
-			$jsonContent['host'],
-			$jsonContent['port'],
+			isset($jsonContent['host']) ? $jsonContent['host'] : null,
+			isset($jsonContent['port']) ? $jsonContent['port'] : null,
 			$jsonContent['username'],
 			$jsonContent['password'],
-			$jsonContent['databaseName'],
+			$jsonContent['name'],
 			isset($jsonContent['attributes']) ? $jsonContent['attributes'] : null
 		);
 	}
