@@ -1,5 +1,6 @@
 <?php
 namespace HentTest;
+
 use DateTime;
 use Hent\InfoSchema\Columns;
 use Hent\InfoSchema\ColumnsByTableLookup;

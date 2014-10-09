@@ -1,5 +1,6 @@
 <?php
 namespace Hent\InfoSchema;
+
 use Hent\Databean\Key;
 use Hent\Field\Field;
 

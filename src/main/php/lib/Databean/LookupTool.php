@@ -1,5 +1,6 @@
 <?php
 namespace Hent\Databean;
+
 use CachingIterator;
 use ArrayIterator;
 use Hent\Field\Field;

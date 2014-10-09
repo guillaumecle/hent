@@ -1,5 +1,6 @@
 <?php
 namespace Hent\SchemaUpdate;
+
 use ArrayIterator;
 use CachingIterator;
 use Hent\Field\Field;

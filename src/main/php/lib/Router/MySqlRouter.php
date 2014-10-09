@@ -1,5 +1,6 @@
 <?php
 namespace Hent\Router;
+
 use Exception;
 use Hent\Node\Node;
 use Hent\SchemaUpdate\SchemaUpdater;

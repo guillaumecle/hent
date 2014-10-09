@@ -1,5 +1,6 @@
 <?php
 namespace Hent\Node;
+
 use Exception;
 use Hent\Databean\Databean;
 use Hent\Databean\Key;

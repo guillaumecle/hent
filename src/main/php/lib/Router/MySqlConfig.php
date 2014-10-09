@@ -1,5 +1,6 @@
 <?php
 namespace Hent\Router;
+
 use PDO;
 
 abstract class MySqlConfig {

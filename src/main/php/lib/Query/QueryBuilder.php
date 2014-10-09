@@ -1,5 +1,6 @@
 <?php
 namespace Hent\Query;
+
 use ArrayIterator;
 use CachingIterator;
 use Hent\Databean\Databean;

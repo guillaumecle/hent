@@ -1,5 +1,6 @@
 <?php
 namespace Hent\Field;
+
 abstract class BaseField implements Field {
 
 	/**

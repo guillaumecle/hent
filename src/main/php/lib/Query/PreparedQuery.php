@@ -1,5 +1,6 @@
 <?php
 namespace Hent\Query;
+
 class PreparedQuery {
 
 	/**

@@ -12,4 +12,5 @@ interface Databean extends Fieldable {
 	 * @return Lookup[]
 	 */
 	public function getIndexes();
+
 }
