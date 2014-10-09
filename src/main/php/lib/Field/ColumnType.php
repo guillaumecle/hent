@@ -27,6 +27,13 @@ class ColumnType {
 	}
 
 	/**
+	 * @return ColumnType
+	 */
+	public static function boolean() {
+		return new ColumnType('tinyint(1)');
+	}
+
+	/**
 	 * @var string
 	 */
 	private $sqlType;
