@@ -148,7 +148,7 @@ class Node {
 	}
 
 	/**
-	 * @param $rs
+	 * @param array $rs
 	 * @return Databean
 	 */
 	private function databeanFromResultSet($rs) {
@@ -167,7 +167,7 @@ class Node {
 		$dFields = $d->getFields();
 		$dClass = new ReflectionClass(get_class($d));
 		$databean = $dClass->newInstanceWithoutConstructor();
-		$prop = $dClass->getProperty('key');
+		$prop = $dClass->getProperty($this->getDatabean()->getKeyFieldName());
 		$prop->setAccessible(true);
 		$prop->setValue($databean, $key);
 		foreach($dFields as $field) {

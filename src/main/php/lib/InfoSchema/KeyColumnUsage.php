@@ -1,14 +1,14 @@
 <?php
 namespace Hent\InfoSchema;
 
-use Hent\Databean\Databean;
+use Hent\Databean\BaseDatabean;
 use Hent\Databean\Key;
 use Hent\Databean\Lookup;
 use Hent\Field\Field;
 use Hent\Field\IntegerField;
 use Hent\Field\StringField;
 
-class KeyColumnUsage implements Databean {
+class KeyColumnUsage extends BaseDatabean {
 
 	private $key;
 

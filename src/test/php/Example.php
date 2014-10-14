@@ -1,13 +1,14 @@
 <?php
 namespace HentTest;
+
 use DateTime;
-use Hent\Databean\Databean;
+use Hent\Databean\BaseDatabean;
 use Hent\Databean\Lookup;
 use Hent\Field\DateField;
 use Hent\Field\Field;
 use Hent\Field\StringField;
 
-class Example implements Databean {
+class Example extends BaseDatabean {
 
 	/**
 	 * @var ExampleKey

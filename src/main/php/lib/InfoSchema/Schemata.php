@@ -1,12 +1,12 @@
 <?php
 namespace Hent\InfoSchema;
 
-use Hent\Databean\Databean;
+use Hent\Databean\BaseDatabean;
 use Hent\Databean\Lookup;
 use Hent\Field\Field;
 use Hent\Field\StringField;
 
-class Schemata implements Databean {
+class Schemata extends BaseDatabean {
 
 	/**
 	 * @var SchemataKey

@@ -1,12 +1,12 @@
 <?php
 namespace Hent\InfoSchema;
 
-use Hent\Databean\Databean;
+use Hent\Databean\BaseDatabean;
 use Hent\Databean\Lookup;
 use Hent\Field\Field;
 use Hent\Field\StringField;
 
-class Columns implements Databean {
+class Columns extends BaseDatabean {
 
 	/**
 	 * @var ColumnsKey

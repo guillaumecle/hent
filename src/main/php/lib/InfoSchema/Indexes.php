@@ -1,13 +1,13 @@
 <?php
 namespace Hent\InfoSchema;
 
-use Hent\Databean\Databean;
+use Hent\Databean\BaseDatabean;
 use Hent\Databean\Lookup;
 use Hent\Field\Field;
 use Hent\Field\IntegerField;
 use Hent\Field\StringField;
 
-class Indexes implements Databean {
+class Indexes extends BaseDatabean {
 
 	/**
 	 * @var IndexesKey

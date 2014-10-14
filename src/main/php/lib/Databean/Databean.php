@@ -9,6 +9,11 @@ interface Databean extends Fieldable {
 	public function getKey();
 
 	/**
+	 * @return string
+	 */
+	public function getKeyFieldName();
+
+	/**
 	 * @return Lookup[]
 	 */
 	public function getIndexes();
