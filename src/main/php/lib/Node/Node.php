@@ -9,6 +9,7 @@ use Hent\Databean\LookupTool;
 use Hent\Query\QueryBuilder;
 use PDO;
 use ReflectionClass;
+use ReflectionProperty;
 
 class Node {
 
@@ -32,13 +33,24 @@ class Node {
 	private $builder;
 
 	/**
-	 * @param $databean Databean
+	 * @param string $databeanClass
+	 * @param string $keyClass
 	 * @param $sqlName string
 	 */
-	public function __construct($databean, $sqlName = null) {
-		$this->databean = $databean;
+	public function __construct($databeanClass, $keyClass, $sqlName = null) {
+//		$this->databean = $databean;
+		$databeanRC = new ReflectionClass($databeanClass);
+		$this->databean = $databeanRC->newInstanceWithoutConstructor();
+		$keyField = new ReflectionProperty($databeanClass, $this->databean->getKeyFieldName());
+		$keyRC = new ReflectionClass($keyClass);
+		$key = $keyRC->newInstanceWithoutConstructor();
+		$keyField->setAccessible(true);
+		$keyField->setValue($this->databean, $key);
+
 		if (!empty($sqlName)) {
 			$this->sqlName = $sqlName;
+		} else {
+			$databeanRC->getShortName();
 		}
 		$this->builder = new QueryBuilder($this);
 	}

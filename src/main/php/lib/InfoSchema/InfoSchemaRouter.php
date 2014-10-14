@@ -37,11 +37,11 @@ class InfoSchemaRouter extends MySqlRouter {
 	 * @param MySqlConfig $config
 	 */
 	public function __construct(MySqlConfig $config) {
-		$this->schemata = parent::registerNode(new Node(new Schemata(), 'SCHEMATA'));
-		$this->tables = parent::registerNode(new Node(new Tables()));
-		$this->columns = parent::registerNode(new Node(new Columns()));
-		$this->keys = parent::registerNode((new Node(new KeyColumnUsage(), 'KEY_COLUMN_USAGE')));
-		$this->indexes = parent::registerNode((new Node(new Indexes(), 'STATISTICS')));
+		$this->schemata = parent::registerNode(new Node(Schemata::class, SchemataKey::class, 'SCHEMATA'));
+		$this->tables = parent::registerNode(new Node(Tables::class, TablesKey::class));
+		$this->columns = parent::registerNode(new Node(Columns::class, ColumnsKey::class));
+		$this->keys = parent::registerNode(new Node(KeyColumnUsage::class, KeyColumnUsageKey::class, 'KEY_COLUMN_USAGE'));
+		$this->indexes = parent::registerNode(new Node(Indexes::class, IndexesKey::class, 'STATISTICS'));
 		$infoSchemaConfig = new BaseMySqlConfig(
 			$config->getHost(),
 			$config->getPort(),

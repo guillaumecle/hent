@@ -48,27 +48,3 @@ class Schemata extends BaseDatabean {
 	}
 
 }
-class SchemataByNameLookup implements Lookup {
-
-	/**
-	 * @var string
-	 */
-	private $name;
-
-	/**
-	 * @param string $name;
-	 */
-	public function __construct($name) {
-		$this->name = $name;
-	}
-
-	/**
-	 * @return Field[]
-	 */
-	public function getFields() {
-		return [
-			(new StringField('name'))->setSqlName('SCHEMA_NAME')
-		];
-	}
-
-}
