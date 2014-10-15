@@ -50,7 +50,7 @@ class Node {
 		if (!empty($sqlName)) {
 			$this->sqlName = $sqlName;
 		} else {
-			$databeanRC->getShortName();
+			$this->sqlName = $databeanRC->getShortName();
 		}
 		$this->builder = new QueryBuilder($this);
 	}
@@ -59,10 +59,7 @@ class Node {
 	 * @return string
 	 */
 	private function getName() {
-		if (isset($this->sqlName)) {
-			return $this->sqlName;
-		}
-		return (new ReflectionClass(get_class($this->databean)))->getShortName();
+		return $this->sqlName;
 	}
 
 	/**
