@@ -1,5 +1,6 @@
 <?php
 namespace HentTest;
+
 use Hent\Node\Node;
 use Hent\Router\BaseMySqlConfig;
 use Hent\Router\MySqlConfig;

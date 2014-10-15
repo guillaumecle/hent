@@ -56,6 +56,9 @@ class BaseMySqlConfig extends MySqlConfig {
 	 * @return string
 	 */
 	public function getHost() {
+		if ($this->host == null) {
+			return parent::getHost();
+		}
 		return $this->host;
 	}
 
@@ -63,6 +66,9 @@ class BaseMySqlConfig extends MySqlConfig {
 	 * @return int
 	 */
 	public function getPort() {
+		if ($this->port == null) {
+			return parent::getPort();
+		}
 		return $this->port;
 	}
 
