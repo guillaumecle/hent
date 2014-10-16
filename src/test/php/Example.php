@@ -26,11 +26,11 @@ class Example extends BaseDatabean {
 	private $date;
 
 	/**
-	 * @param $key ExampleKey
-	 * @param $val int
+	 * @param ExampleKey $key
+	 * @param string $val
 	 * @param DateTime $date
 	 */
-	public function __construct($key, $val, $date) {
+	public function __construct(ExampleKey $key, $val, DateTime $date) {
 		$this->key = $key;
 		$this->val = $val;
 		$this->date = $date;
@@ -94,7 +94,7 @@ class TestLookup implements Lookup {
 	 * @param DateTime $date
 	 * @param string $val
 	 */
-	function __construct($date, $val) {
+	function __construct(DateTime $date, $val) {
 		$this->date = $date;
 		$this->val = $val;
 	}

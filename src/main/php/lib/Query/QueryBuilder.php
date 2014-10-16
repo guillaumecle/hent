@@ -7,6 +7,7 @@ use Hent\Databean\Databean;
 use Hent\Databean\Fieldable;
 use Hent\Field\Field;
 use Hent\Node\Node;
+use Hent\Util;
 use ReflectionClass;
 
 class QueryBuilder {
@@ -21,7 +22,7 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param $databean Databean
+	 * @param Databean $databean
 	 * @return PreparedQuery
 	 */
 	public function getInsert(Databean $databean) {
@@ -62,6 +63,64 @@ class QueryBuilder {
 			}
 		}
 		$sql .= ') value ' . $value . ')';
+		return new PreparedQuery($params, $sql);
+	}
+
+	/**
+	 * @param Databean[] $databeans
+	 * @return PreparedQuery
+	 */
+	public function getInsertMulti(array $databeans) {
+		$databean = $databeans[0];
+		$fieldCount = count($databean->getFields()) + count($databean->getKey()->getFields());
+		$sql = 'insert into ' . $this->tableName . ' (';
+		$value = ' (';
+		$params = [];
+		$keyFields = $databean->getKey()->getFields();
+		$keyClass = new ReflectionClass($databean->getKey());
+		/**
+		 * @var $keyField Field
+		 */
+		$fieldIndex = 0;
+		for (;$fieldIndex < count($keyFields); $fieldIndex++) {
+			$keyField = $keyFields[$fieldIndex];
+			$sql .= $keyField->getEscapedSqlName();
+			$value .= '?';
+			$prop = $keyClass->getProperty($keyField->getName());
+			$prop->setAccessible(true);
+			for ($i = 0; $i < count($databeans); $i++) {
+				$params[$i * $fieldCount + $fieldIndex] = $keyField->serialize($prop->getValue($databeans[$i]->getKey()));
+			}
+			if ($fieldIndex < $fieldCount - 1) {
+				$sql .= ', ';
+				$value .= ', ';
+			}
+		}
+		$databeanFields = $databean->getFields();
+		$databeanClass = new ReflectionClass($databean);
+		for (;$fieldIndex < $fieldCount; $fieldIndex++) {
+			$databeanField = $databeanFields[$fieldIndex - count($keyFields)];
+			$sql .= $databeanField->getEscapedSqlName();
+			$value .= '?';
+			$prop = $databeanClass->getProperty($databeanField->getName());
+			$prop->setAccessible(true);
+			for ($i = 0; $i < count($databeans); $i++) {
+				$params[$i * $fieldCount + $fieldIndex] = $databeanField->serialize($prop->getValue($databeans[$i]));
+			}
+			if ($fieldIndex < $fieldCount - 1) {
+				$sql .= ', ';
+				$value .= ', ';
+			}
+		}
+		$value .= ')';
+		$values = '';
+		for ($i = 1; $i <= count($databeans); $i++) {
+			$values .= $value;
+			if ($i < count($databeans)) {
+				$values .= ',';
+			}
+		}
+		$sql .= ') value ' . $values;
 		return new PreparedQuery($params, $sql);
 	}
 

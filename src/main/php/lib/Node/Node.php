@@ -7,6 +7,7 @@ use Hent\Databean\Key;
 use Hent\Databean\Lookup;
 use Hent\Databean\LookupTool;
 use Hent\Query\QueryBuilder;
+use Hent\Range\Range;
 use PDO;
 use ReflectionClass;
 use ReflectionProperty;
@@ -231,6 +232,19 @@ class Node {
 			}
 		}
 		return $this->indexNames;
+	}
+
+	public function scan(Range $range){
+
+	}
+
+	/**
+	 * @param Databean[] $databeans
+	 */
+	public function putMulti(array $databeans) {//TODO check if exist
+		$pQuery = $this->builder->getInsertMulti($databeans);
+		$st = $this->co->prepare($pQuery->getSql());
+		$st->execute($pQuery->getData());
 	}
 
 }

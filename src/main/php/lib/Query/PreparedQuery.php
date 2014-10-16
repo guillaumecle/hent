@@ -9,13 +9,13 @@ class PreparedQuery {
 	private $sql;
 
 	/**
-	 * @var array
+	 * @var string[]
 	 */
 	private $data;
 
 	/**
-	 * @param $data array
-	 * @param $sql string
+	 * @param string[] $data
+	 * @param string $sql
 	 */
 	function __construct($data, $sql) {
 		$this->data = $data;
@@ -23,7 +23,7 @@ class PreparedQuery {
 	}
 
 	/**
-	 * @return array
+	 * @return string[]
 	 */
 	public function getData() {
 		return $this->data;

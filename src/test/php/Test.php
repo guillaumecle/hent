@@ -10,9 +10,13 @@ use Hent\InfoSchema\KeyColumnsByTableAndName;
 use Hent\InfoSchema\Tables;
 use Hent\InfoSchema\TablesBySchemaLookup;
 use Hent\Router\BaseMySqlConfig;
+use Hent\Util;
+use PHP_Timer;
 use PHPUnit_Framework_TestCase;
 
 class Test extends PHPUnit_Framework_TestCase {
+
+	const NB_INSERT = 1000;
 
 	/**
 	 * @var ExampleRouter
@@ -141,5 +145,25 @@ class Test extends PHPUnit_Framework_TestCase {
 		self::$mr->exampleNode->delete($key);
 	}
 
+	public function testPerfSimple() {
+		PHP_Timer::start();
+		for ($i = 0; $i < self::NB_INSERT; $i++) {
+			$example = new Example(new ExampleKey($i, 'me'), $i % 2, new DateTime());
+			self::$mr->exampleNode->put($example);
+		}
+		$time = PHP_Timer::stop();
+		Util::println('put simple : ' . PHP_Timer::secondsToTimeString($time));
+	}
+
+	public function testPerfMulti() {
+		PHP_Timer::start();
+		$examples = [];
+		for ($i = 0; $i < self::NB_INSERT; $i++) {
+			$examples[] = new Example(new ExampleKey(- 1 - $i, 'me'), $i % 2, new DateTime());
+		}
+		self::$mr->exampleNode->putMulti($examples);
+		$time = PHP_Timer::stop();
+		Util::println('put multi : ' . PHP_Timer::secondsToTimeString($time));
+	}
 }
 

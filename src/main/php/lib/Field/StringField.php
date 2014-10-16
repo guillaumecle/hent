@@ -12,15 +12,15 @@ class StringField extends BaseField {
 	 * @return string
 	 */
 	public function serialize($data) {
-		return $data;
+		return strval($data);
 	}
 
 	/**
 	 * @param string $dbString
-	 * @return mixed
+	 * @return string
 	 */
 	public function deserialize($dbString) {
-		return $dbString;
+		return strval($dbString);
 	}
 
 }
