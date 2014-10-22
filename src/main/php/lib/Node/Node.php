@@ -105,7 +105,7 @@ class Node {
 			$st = $this->co->prepare($pQuery->getSql());
 			$st->execute($pQuery->getData());
 		} else {
-			$pQuery = $this->builder->getInsert($databean);
+			$pQuery = $this->builder->getInsertMulti([$databean]);
 			$st = $this->co->prepare($pQuery->getSql());
 			$st->execute($pQuery->getData());
 		}
@@ -136,7 +136,7 @@ class Node {
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());
 		if ($rs = $st->fetch()) {
-			return $this->databeanFromResultSet($rs);
+			return self::databeanFromResultSet($rs);
 		}
 		return null;
 	}
@@ -152,7 +152,7 @@ class Node {
 		$st->execute($pQuery->getData());
 		$res = [];
 		while ($rs = $st->fetch()) {
-			$res[] = $this->databeanFromResultSet($rs);
+			$res[] = self::databeanFromResultSet($rs);
 		}
 		return $res;
 	}
@@ -241,10 +241,25 @@ class Node {
 	/**
 	 * @param Databean[] $databeans
 	 */
-	public function putMulti(array $databeans) {//TODO check if exist
+	public function putMulti($databeans) {//TODO check if exist
 		$pQuery = $this->builder->getInsertMulti($databeans);
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());
+	}
+
+	/**
+	 * @param Key[] $keys
+	 * @return Databean[]
+	 */
+	public function getMulti($keys) {
+		$pQuery = $this->builder->getSelectMulti($keys);
+		$st = $this->co->prepare($pQuery->getSql());
+		$st->execute($pQuery->getData());
+		$res = [];
+		while ($rs = $st->fetch()) {
+			$res[] = self::databeanFromResultSet($rs);
+		}
+		return $res;
 	}
 
 }

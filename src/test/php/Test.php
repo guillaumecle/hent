@@ -145,25 +145,52 @@ class Test extends PHPUnit_Framework_TestCase {
 		self::$mr->exampleNode->delete($key);
 	}
 
-	public function testPerfSimple() {
+	public function testPerfPutSimple() {
 		PHP_Timer::start();
 		for ($i = 0; $i < self::NB_INSERT; $i++) {
-			$example = new Example(new ExampleKey($i, 'me'), $i % 2, new DateTime());
+			$example = new Example(new ExampleKey(- 1 - $i, 'me'), $i % 2, new DateTime());
 			self::$mr->exampleNode->put($example);
 		}
 		$time = PHP_Timer::stop();
 		Util::println('put simple : ' . PHP_Timer::secondsToTimeString($time));
 	}
 
-	public function testPerfMulti() {
+	public function testPerfPutMulti() {
 		PHP_Timer::start();
 		$examples = [];
 		for ($i = 0; $i < self::NB_INSERT; $i++) {
-			$examples[] = new Example(new ExampleKey(- 1 - $i, 'me'), $i % 2, new DateTime());
+			$examples[] = new Example(new ExampleKey($i, 'me'), $i % 2, new DateTime());
 		}
 		self::$mr->exampleNode->putMulti($examples);
 		$time = PHP_Timer::stop();
 		Util::println('put multi : ' . PHP_Timer::secondsToTimeString($time));
 	}
-}
 
+	public function testPerfGetSimple() {
+		$keys = [];
+		for ($i = 0; $i < self::NB_INSERT; $i++) {
+			$keys[] = new ExampleKey($i, 'me');
+		}
+		$examples = [];
+		PHP_Timer::start();
+		foreach ($keys as $key) {
+			$examples[] = self::$mr->exampleNode->get($key);
+		}
+		$time = PHP_Timer::stop();
+		$this->assertEquals(self::NB_INSERT, count($examples));
+		Util::println('get simple : ' . PHP_Timer::secondsToTimeString($time));
+	}
+
+	public function testPerfGetMulti() {
+		$keys = [];
+		for ($i = 0; $i < self::NB_INSERT; $i++) {
+			$keys[] = new ExampleKey($i, 'me');
+		}
+		PHP_Timer::start();
+		$examples = self::$mr->exampleNode->getMulti($keys);
+		$time = PHP_Timer::stop();
+		$this->assertEquals(self::NB_INSERT, count($examples));
+		Util::println('get multi : ' . PHP_Timer::secondsToTimeString($time));
+	}
+
+}

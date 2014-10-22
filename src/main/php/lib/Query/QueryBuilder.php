@@ -5,9 +5,9 @@ use ArrayIterator;
 use CachingIterator;
 use Hent\Databean\Databean;
 use Hent\Databean\Fieldable;
+use Hent\Databean\Key;
 use Hent\Field\Field;
 use Hent\Node\Node;
-use Hent\Util;
 use ReflectionClass;
 
 class QueryBuilder {
@@ -22,55 +22,10 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param Databean $databean
-	 * @return PreparedQuery
-	 */
-	public function getInsert(Databean $databean) {
-		$sql = 'insert into ' . $this->tableName . ' (';
-		$value = ' (';
-		$params = [];
-		$kIterator = new CachingIterator(new ArrayIterator($databean->getKey()->getFields()));
-		$class = new ReflectionClass(get_class($databean->getKey()));
-		/**
-		 * @var $field Field
-		 */
-		foreach ($kIterator as $field) {
-			$sql .= $field->getEscapedSqlName();
-			$value .= '?';
-			$prop = $class->getProperty($field->getName());
-			$prop->setAccessible(true);
-			$params[] = $field->serialize($prop->getValue($databean->getKey()));
-			if ($kIterator->hasNext()) {
-				$sql .= ', ';
-				$value .= ', ';
-			}
-		}
-		$dIterator = new CachingIterator(new ArrayIterator($databean->getFields()));
-		$class = new ReflectionClass(get_class($databean));
-		if ($dIterator->hasNext()) {
-			$sql .= ', ';
-			$value .= ', ';
-		}
-		foreach ($dIterator as $field) {
-			$sql .= $field->getEscapedSqlName();
-			$value .= '?';
-			$prop = $class->getProperty($field->getName());
-			$prop->setAccessible(true);
-			$params[] = $field->serialize($prop->getValue($databean));
-			if ($dIterator->hasNext()) {
-				$sql .= ', ';
-				$value .= ', ';
-			}
-		}
-		$sql .= ') value ' . $value . ')';
-		return new PreparedQuery($params, $sql);
-	}
-
-	/**
 	 * @param Databean[] $databeans
 	 * @return PreparedQuery
 	 */
-	public function getInsertMulti(array $databeans) {
+	public function getInsertMulti($databeans) {
 		$databean = $databeans[0];
 		$fieldCount = count($databean->getFields()) + count($databean->getKey()->getFields());
 		$sql = 'insert into ' . $this->tableName . ' (';
@@ -134,6 +89,10 @@ class QueryBuilder {
 		return new PreparedQuery($pq->getData(), $sql . $pq->getSql());
 	}
 
+	/**
+	 * @param Key $key
+	 * @return PreparedQuery
+	 */
 	public function getDelete($key) {
 		$sql = 'delete from ' . $this->tableName;
 		$pq = $this->getWhereClause($key);
@@ -146,22 +105,8 @@ class QueryBuilder {
 	 */
 	private function getWhereClause($fieldable) {
 		$sql = ' where ';
-		$params = [];
-		$iterator = new CachingIterator(new ArrayIterator($fieldable->getFields()));
-		$class = new ReflectionClass(get_class($fieldable));
-		/**
-		 * @var $field Field
-		 */
-		foreach ($iterator as $field) {
-			$sql .= $field->getEscapedSqlName() . '=?';
-			$prop = $class->getProperty($field->getName());
-			$prop->setAccessible(true);
-			$params[] = $field->serialize($prop->getValue($fieldable));
-			if ($iterator->hasNext()) {
-				$sql .= ' and ';
-			}
-		}
-		return new PreparedQuery($params, $sql);
+		$conjunction = $this->getConjunction($fieldable);
+		return new PreparedQuery($conjunction->getData(), $sql . $conjunction->getSql());
 	}
 
 	/**
@@ -187,6 +132,59 @@ class QueryBuilder {
 		}
 		$where = $this->getWhereClause($databean->getKey());
 		return new PreparedQuery(array_merge($params, $where->getData()), $sql . $where->getSql());
+	}
+
+	/**
+	 * @param Key[] $keys
+	 * @return PreparedQuery
+	 */
+	public function getSelectMulti($keys) {
+		$sql = 'select * from ' . $this->tableName . ' where ';
+		$disjunction = $this->getDisjunction($keys);
+		return new PreparedQuery($disjunction->getData(), $sql . $disjunction->getSql());
+	}
+
+	/**
+	 * @param Fieldable $fieldable
+	 * @return PreparedQuery
+	 */
+	private function getConjunction($fieldable) {
+		$sql = '';
+		$params = [];
+		$iterator = new CachingIterator(new ArrayIterator($fieldable->getFields()));
+		$class = new ReflectionClass(get_class($fieldable));
+		/**
+		 * @var $field Field
+		 */
+		foreach ($iterator as $field) {
+			$sql .= $field->getEscapedSqlName() . '=?';
+			$prop = $class->getProperty($field->getName());
+			$prop->setAccessible(true);
+			$params[] = $field->serialize($prop->getValue($fieldable));
+			if ($iterator->hasNext()) {
+				$sql .= ' and ';
+			}
+		}
+		return new PreparedQuery($params, $sql);
+	}
+
+	/**
+	 * @param Fieldable[] $fieldables
+	 * @return PreparedQuery
+	 */
+	private function getDisjunction($fieldables) {
+		$sql = '';
+		$params = [];
+		$iterator = new CachingIterator(new ArrayIterator($fieldables));
+		foreach ($iterator as $fieldable) {
+			$conjunction = $this->getConjunction($fieldable);
+			$sql .= '(' . $conjunction->getSql() . ')';
+			$params = array_merge($params, $conjunction->getData());
+			if ($iterator->hasNext()) {
+				$sql .= 'or';
+			}
+		}
+		return new PreparedQuery($params, $sql);
 	}
 
 }

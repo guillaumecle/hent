@@ -1,10 +1,11 @@
 <?php
 namespace HentTest;
-use Hent\Databean\Key;
+
+use Hent\Databean\BaseKey;
 use Hent\Field\IntegerField;
 use Hent\Field\StringField;
 
-class ExampleKey implements Key {
+class ExampleKey extends BaseKey {
 
 	/**
 	 * @var int
