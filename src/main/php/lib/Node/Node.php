@@ -132,7 +132,7 @@ class Node {
 	 */
 	public function get(Key $key) {
 		$this->checkKey($key);
-		$pQuery = $this->builder->getSelect($key);
+		$pQuery = $this->builder->getSelectMulti([$key]);
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());
 		if ($rs = $st->fetch()) {
@@ -147,7 +147,7 @@ class Node {
 	 */
 	public function lookup($lookup) {
 		$this->checkLookup($lookup);
-		$pQuery = $this->builder->getSelect($lookup);
+		$pQuery = $this->builder->getSelectMulti([$lookup]);
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());
 		$res = [];

@@ -5,18 +5,18 @@ use Hent\Databean\BaseLookup;
 use Hent\Field\Field;
 use Hent\Field\StringField;
 
-class SchemataByNameLookup extends BaseLookup {
+class TablesBySchemaLookup extends BaseLookup {
 
 	/**
 	 * @var string
 	 */
-	private $name;
+	private $schema;
 
 	/**
-	 * @param string $name;
+	 * @param string $schema
 	 */
-	public function __construct($name) {
-		$this->name = $name;
+	public function __construct($schema) {
+		$this->schema = $schema;
 	}
 
 	/**
@@ -24,7 +24,7 @@ class SchemataByNameLookup extends BaseLookup {
 	 */
 	public function getFields() {
 		return [
-			(new StringField('name'))->setSqlName('SCHEMA_NAME')
+			(new StringField('schema'))->setSqlName('TABLE_SCHEMA')
 		];
 	}
 

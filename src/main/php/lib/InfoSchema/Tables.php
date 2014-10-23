@@ -81,27 +81,3 @@ class Tables extends BaseDatabean {
 	}
 
 }
-class TablesBySchemaLookup implements Lookup {
-
-	/**
-	 * @var string
-	 */
-	private $schema;
-
-	/**
-	 * @param string $schema
-	 */
-	public function __construct($schema) {
-		$this->schema = $schema;
-	}
-
-	/**
-	 * @return Field[]
-	 */
-	public function getFields() {
-		return [
-			(new StringField('schema'))->setSqlName('TABLE_SCHEMA')
-		];
-	}
-
-}
