@@ -80,16 +80,6 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param Key $key
-	 * @return PreparedQuery
-	 */
-	public function getDelete($key) {
-		$sql = 'delete from ' . $this->tableName;
-		$pq = $this->getWhereClause($key);
-		return new PreparedQuery($pq->getData(), $sql . $pq->getSql());
-	}
-
-	/**
 	 * @param $fieldable Fieldable
 	 * @return PreparedQuery
 	 */

@@ -16,7 +16,7 @@ use PHPUnit_Framework_TestCase;
 
 class Test extends PHPUnit_Framework_TestCase {
 
-	const NB_INSERT = 200;
+	const NB_INSERT = 500;
 
 	/**
 	 * @var ExampleRouter

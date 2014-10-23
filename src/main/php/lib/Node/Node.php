@@ -194,7 +194,7 @@ class Node {
 	 */
 	public function delete(Key $key) {
 		$this->checkKey($key);
-		$pq = $this->builder->getDelete($key);
+		$pq = $this->builder->getDeleteMulti([$key]);
 		$ps = $this->co->prepare($pq->getSql());
 		$ps->execute($pq->getData());
 	}
