@@ -262,4 +262,13 @@ class Node {
 		return $res;
 	}
 
+	/**
+	 * @param Key[] $keys
+	 */
+	public function deleteMulti($keys) {
+		$pQuery = $this->builder->getDeleteMulti($keys);
+		$st = $this->co->prepare($pQuery->getSql());
+		$st->execute($pQuery->getData());
+	}
+
 }

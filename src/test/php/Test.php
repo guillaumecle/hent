@@ -2,6 +2,7 @@
 namespace HentTest;
 
 use DateTime;
+use Hent\Databeans;
 use Hent\InfoSchema\Columns;
 use Hent\InfoSchema\ColumnsByTableLookup;
 use Hent\InfoSchema\IndexesByTable;
@@ -9,22 +10,30 @@ use Hent\InfoSchema\InfoSchemaRouter;
 use Hent\InfoSchema\KeyColumnsByTableAndName;
 use Hent\InfoSchema\Tables;
 use Hent\InfoSchema\TablesBySchemaLookup;
-use Hent\Router\BaseMySqlConfig;
 use Hent\Util;
 use PHP_Timer;
 use PHPUnit_Framework_TestCase;
 
 class Test extends PHPUnit_Framework_TestCase {
 
-	const NB_INSERT = 500;
+	const NB_INSERT = 200;
 
 	/**
 	 * @var ExampleRouter
 	 */
 	private static $mr;
 
+	/**
+	 * @var Example[]
+	 */
+	private static $examples;
+
 	public static function setUpBeforeClass() {
 		self::$mr = new ExampleRouter();
+		self::$examples = [];
+		for ($i = 0; $i < self::NB_INSERT; $i++) {
+			self::$examples[] = new Example(new ExampleKey($i, 'me'), $i % 2, new DateTime());
+		}
 	}
 
 	public function testAllAndDelete() {
@@ -147,48 +156,46 @@ class Test extends PHPUnit_Framework_TestCase {
 
 	public function testPerfPutSimple() {
 		PHP_Timer::start();
-		for ($i = 0; $i < self::NB_INSERT; $i++) {
-			$example = new Example(new ExampleKey(- 1 - $i, 'me'), $i % 2, new DateTime());
+		foreach(self::$examples as $example) {
 			self::$mr->exampleNode->put($example);
 		}
 		$time = PHP_Timer::stop();
 		Util::println('put simple : ' . PHP_Timer::secondsToTimeString($time));
+		self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
 	}
 
 	public function testPerfPutMulti() {
 		PHP_Timer::start();
-		$examples = [];
-		for ($i = 0; $i < self::NB_INSERT; $i++) {
-			$examples[] = new Example(new ExampleKey($i, 'me'), $i % 2, new DateTime());
-		}
-		self::$mr->exampleNode->putMulti($examples);
+		self::$mr->exampleNode->putMulti(self::$examples);
 		$time = PHP_Timer::stop();
 		Util::println('put multi : ' . PHP_Timer::secondsToTimeString($time));
+		self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
 	}
 
 	public function testPerfGetSimple() {
-		$keys = [];
-		for ($i = 0; $i < self::NB_INSERT; $i++) {
-			$keys[] = new ExampleKey($i, 'me');
-		}
+		self::$mr->exampleNode->putMulti(self::$examples);
 		$examples = [];
 		PHP_Timer::start();
-		foreach ($keys as $key) {
+		foreach (Databeans::getKeys(self::$examples) as $key) {
 			$examples[] = self::$mr->exampleNode->get($key);
 		}
 		$time = PHP_Timer::stop();
+		foreach ($examples as $key => $example) {
+			if ($example === null) {
+				unset($examples[$key]);
+			}
+		}
+		self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
 		$this->assertEquals(self::NB_INSERT, count($examples));
 		Util::println('get simple : ' . PHP_Timer::secondsToTimeString($time));
 	}
 
 	public function testPerfGetMulti() {
-		$keys = [];
-		for ($i = 0; $i < self::NB_INSERT; $i++) {
-			$keys[] = new ExampleKey($i, 'me');
-		}
+		self::$mr->exampleNode->putMulti(self::$examples);
 		PHP_Timer::start();
-		$examples = self::$mr->exampleNode->getMulti($keys);
+		$examples = self::$mr->exampleNode->getMulti(Databeans::getKeys(self::$examples));
 		$time = PHP_Timer::stop();
+		self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
 		$this->assertEquals(self::NB_INSERT, count($examples));
 		Util::println('get multi : ' . PHP_Timer::secondsToTimeString($time));
 	}

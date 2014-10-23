@@ -177,4 +177,14 @@ class QueryBuilder {
 		return new PreparedQuery($params, $sql);
 	}
 
+	/**
+	 * @param Fieldable[] $fieldables
+	 * @return PreparedQuery
+	 */
+	public function getDeleteMulti($fieldables) {
+		$sql = 'delete from ' . $this->tableName . ' where ';
+		$disjunction = $this->getDisjunction($fieldables);
+		return new PreparedQuery($disjunction->getData(), $sql . $disjunction->getSql());
+	}
+
 }
