@@ -242,6 +242,9 @@ class Node {
 	 * @param Databean[] $databeans
 	 */
 	public function putMulti($databeans) {//TODO check if exist
+		if(count($databeans) === 0){
+			return;
+		}
 		$pQuery = $this->builder->getInsertMulti($databeans);
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());
@@ -252,6 +255,9 @@ class Node {
 	 * @return Databean[]
 	 */
 	public function getMulti($keys) {
+		if(count($keys) === 0){
+			return [];
+		}
 		$pQuery = $this->builder->getSelectMulti($keys);
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());
@@ -266,6 +272,9 @@ class Node {
 	 * @param Key[] $keys
 	 */
 	public function deleteMulti($keys) {
+		if(count($keys) === 0){
+			return;
+		}
 		$pQuery = $this->builder->getDeleteMulti($keys);
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());

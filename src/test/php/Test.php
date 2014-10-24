@@ -16,7 +16,12 @@ use PHPUnit_Framework_TestCase;
 
 class Test extends PHPUnit_Framework_TestCase {
 
-	const NB_INSERT = 500;
+	const NB_INSERT = 148;
+	const MAX_TIME = 2;
+
+	private static function displayResult($done, $time, $message) {
+		Util::println($message . ' : ' . $done . ' ' . "\t" . '  ' . intval(1000 * $time) .' ms');
+	}
 
 	/**
 	 * @var ExampleRouter
@@ -38,9 +43,7 @@ class Test extends PHPUnit_Framework_TestCase {
 
 	public function testAllAndDelete() {
 		$all = self::$mr->exampleNode->all();
-		foreach ($all as $databean) {
-			self::$mr->exampleNode->delete($databean->getKey());
-		}
+		self::$mr->exampleNode->deleteMulti(Databeans::getKeys($all));
 		$count = count(self::$mr->exampleNode->all());
 		$this->assertEquals(0, $count);
 	}
@@ -155,49 +158,69 @@ class Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testPerfPutSimple() {
-		PHP_Timer::start();
-		foreach(self::$examples as $example) {
-			self::$mr->exampleNode->put($example);
-		}
-		$time = PHP_Timer::stop();
-		Util::println('put simple : ' . PHP_Timer::secondsToTimeString($time));
-		self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
+		$time = 0;
+		$done = 0;
+		do {
+			PHP_Timer::start();
+			foreach (self::$examples as $example) {
+				self::$mr->exampleNode->put($example);
+			}
+			$time += PHP_Timer::stop();
+			$done++;
+			self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
+		} while ($time < self::MAX_TIME);
+		self::displayResult($done, $time, 'put simple');
 	}
 
 	public function testPerfPutMulti() {
-		PHP_Timer::start();
-		self::$mr->exampleNode->putMulti(self::$examples);
-		$time = PHP_Timer::stop();
-		Util::println('put multi : ' . PHP_Timer::secondsToTimeString($time));
-		self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
+		$time = 0;
+		$done = 0;
+		do {
+			PHP_Timer::start();
+			self::$mr->exampleNode->putMulti(self::$examples);
+			$time += PHP_Timer::stop();
+			$done++;
+			self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
+		} while ($time < self::MAX_TIME);
+		self::displayResult($done, $time, 'put multip');
 	}
 
 	public function testPerfGetSimple() {
 		self::$mr->exampleNode->putMulti(self::$examples);
-		$examples = [];
-		PHP_Timer::start();
-		foreach (Databeans::getKeys(self::$examples) as $key) {
-			$examples[] = self::$mr->exampleNode->get($key);
-		}
-		$time = PHP_Timer::stop();
-		foreach ($examples as $key => $example) {
-			if ($example === null) {
-				unset($examples[$key]);
+		$time = 0;
+		$done = 0;
+		do {
+			$examples = [];
+			PHP_Timer::start();
+			foreach (Databeans::getKeys(self::$examples) as $key) {
+				$examples[] = self::$mr->exampleNode->get($key);
 			}
-		}
+			$time += PHP_Timer::stop();
+			$done++;
+			foreach ($examples as $key => $example) {
+				if ($example === null) {
+					unset($examples[$key]);
+				}
+			}
+			$this->assertEquals(self::NB_INSERT, count($examples));
+		} while ($time < self::MAX_TIME);
 		self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
-		$this->assertEquals(self::NB_INSERT, count($examples));
-		Util::println('get simple : ' . PHP_Timer::secondsToTimeString($time));
+		self::displayResult($done, $time, 'get simple');
 	}
 
 	public function testPerfGetMulti() {
 		self::$mr->exampleNode->putMulti(self::$examples);
-		PHP_Timer::start();
-		$examples = self::$mr->exampleNode->getMulti(Databeans::getKeys(self::$examples));
-		$time = PHP_Timer::stop();
+		$time = 0;
+		$done = 0;
+		do {
+			PHP_Timer::start();
+			$examples = self::$mr->exampleNode->getMulti(Databeans::getKeys(self::$examples));
+			$time += PHP_Timer::stop();
+			$done++;
+			$this->assertEquals(self::NB_INSERT, count($examples));
+		} while ($time < self::MAX_TIME);
 		self::$mr->exampleNode->deleteMulti(Databeans::getKeys(self::$examples));
-		$this->assertEquals(self::NB_INSERT, count($examples));
-		Util::println('get multi : ' . PHP_Timer::secondsToTimeString($time));
+		self::displayResult($done, $time, 'put multip');
 	}
 
 }
