@@ -2,3 +2,4 @@
 vendor
 .DS_Store
 src/test/database.json
+src/test/php/ExampleRouterConfig.php

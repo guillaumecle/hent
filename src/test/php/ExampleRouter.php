@@ -15,32 +15,8 @@ class ExampleRouter extends MySqlRouter {
 
 	public function __construct() {
 		$this->exampleNode = parent::registerNode(new Node(Example::class, ExampleKey::class));
-		$config = BaseMySqlConfig::createFromJsonFile('../database.json');
+		$config = new ExampleRouterConfig();
 		parent::__construct($config);
-	}
-
-}
-class ExampleRouterConfig extends MySqlConfig {
-
-	/**
-	 * @return string
-	 */
-	public function getUsername() {
-		return 'root';
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getPassword() {
-		return '';
-}
-
-	/**
-	 * @return string
-	 */
-	public function getDatabaseName() {
-		return 'hentTest';
 	}
 
 }
