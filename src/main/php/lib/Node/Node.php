@@ -12,7 +12,8 @@ use PDO;
 use ReflectionClass;
 use ReflectionProperty;
 
-class Node {
+// TODO set all fetch flags
+class Node implements IndexedSortedMapStorageNode {
 
 	/**
 	 * @var string
@@ -91,9 +92,6 @@ class Node {
 		$this->co = $co;
 	}
 
-	/**
-	 * @param $databean Databean
-	 */
 	public function put(Databean $databean) {
 		$key = $databean->getKey();
 		$inDdDatabean = $this->get($key);
@@ -125,11 +123,6 @@ class Node {
 		return $res;
 	}
 
-	/**
-	 * @param $key Key
-	 * @return Databean|null
-	 * @throws Exception
-	 */
 	public function get(Key $key) {
 		$this->checkKey($key);
 		$pQuery = $this->builder->getSelectMulti([$key]);
@@ -161,7 +154,7 @@ class Node {
 	 * @param array $rs
 	 * @return Databean
 	 */
-	private function databeanFromResultSet($rs) {
+	public function databeanFromResultSet($rs) {
 		$k = $this->getDatabean()->getKey();
 		$kFields = $k->getFields();
 		$kClass = new ReflectionClass(get_class($k));
@@ -189,9 +182,6 @@ class Node {
 		return $databean;
 	}
 
-	/**
-	 * @param $key Key
-	 */
 	public function delete(Key $key) {
 		$this->checkKey($key);
 		$pq = $this->builder->getDeleteMulti([$key]);
@@ -234,13 +224,13 @@ class Node {
 		return $this->indexNames;
 	}
 
-	public function scan(Range $range){
+	public function scan(Range $range = null){
+		if(empty($range)) {
 
+		}
+		return new ScanIterator($this, $this->builder, $this->co, $range);
 	}
 
-	/**
-	 * @param Databean[] $databeans
-	 */
 	public function putMulti($databeans) {//TODO check if exist
 		if(count($databeans) === 0){
 			return;
@@ -250,10 +240,6 @@ class Node {
 		$st->execute($pQuery->getData());
 	}
 
-	/**
-	 * @param Key[] $keys
-	 * @return Databean[]
-	 */
 	public function getMulti($keys) {
 		if(count($keys) === 0){
 			return [];
@@ -268,9 +254,6 @@ class Node {
 		return $res;
 	}
 
-	/**
-	 * @param Key[] $keys
-	 */
 	public function deleteMulti($keys) {
 		if(count($keys) === 0){
 			return;

@@ -21,6 +21,8 @@ class QueryBuilder {
 		$this->tableName = $node->getEscapedSqlName();
 	}
 
+	// ************ SQL write op ******************* //
+
 	/**
 	 * @param Databean[] $databeans
 	 * @return PreparedQuery
@@ -80,20 +82,10 @@ class QueryBuilder {
 	}
 
 	/**
-	 * @param $fieldable Fieldable
-	 * @return PreparedQuery
-	 */
-	private function getWhereClause($fieldable) {
-		$sql = ' where ';
-		$conjunction = $this->getConjunction($fieldable);
-		return new PreparedQuery($conjunction->getData(), $sql . $conjunction->getSql());
-	}
-
-	/**
 	 * @param $databean Databean
 	 * @return PreparedQuery
 	 */
-	public function getUpdate($databean) {
+	public function getUpdate($databean) {// TODO make this for multiple
 		$sql = 'update ' . $this->tableName . ' set ';
 		$iterator = new CachingIterator(new ArrayIterator($databean->getFields()));
 		$class = new ReflectionClass(get_class($databean));
@@ -115,6 +107,18 @@ class QueryBuilder {
 	}
 
 	/**
+	 * @param Fieldable[] $fieldables
+	 * @return PreparedQuery
+	 */
+	public function getDeleteMulti($fieldables) {
+		$sql = 'delete from ' . $this->tableName . ' where ';
+		$disjunction = $this->getDisjunction($fieldables);
+		return new PreparedQuery($disjunction->getData(), $sql . $disjunction->getSql());
+	}
+
+	// **************** SQL read op **************** //
+
+	/**
 	 * @param Key[] $keys
 	 * @return PreparedQuery
 	 */
@@ -123,6 +127,19 @@ class QueryBuilder {
 		$disjunction = $this->getDisjunction($keys);
 		return new PreparedQuery($disjunction->getData(), $sql . $disjunction->getSql());
 	}
+
+	/**
+	 * @deprecated
+	 * @param $fieldable Fieldable
+	 * @return PreparedQuery
+	 */
+	private function getWhereClause($fieldable) {
+		$sql = ' where ';
+		$conjunction = $this->getConjunction($fieldable);
+		return new PreparedQuery($conjunction->getData(), $sql . $conjunction->getSql());
+	}
+
+	// **************** SQL query utils **************** //
 
 	/**
 	 * @param Fieldable $fieldable
@@ -165,16 +182,6 @@ class QueryBuilder {
 			}
 		}
 		return new PreparedQuery($params, $sql);
-	}
-
-	/**
-	 * @param Fieldable[] $fieldables
-	 * @return PreparedQuery
-	 */
-	public function getDeleteMulti($fieldables) {
-		$sql = 'delete from ' . $this->tableName . ' where ';
-		$disjunction = $this->getDisjunction($fieldables);
-		return new PreparedQuery($disjunction->getData(), $sql . $disjunction->getSql());
 	}
 
 }

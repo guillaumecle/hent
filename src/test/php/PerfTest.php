@@ -9,7 +9,7 @@ use PHPUnit_Framework_TestCase;
 
 class PerfTest extends PHPUnit_Framework_TestCase {
 
-	const NB_INSERT = 8000;
+	const NB_INSERT = 200;
 	const MAX_TIME = 2;
 
 	private static function displayResult($done, $time, $message) {
