@@ -6,6 +6,8 @@ use Hent\Databean\Databean;
 use Hent\Databean\Key;
 use Hent\Databean\Lookup;
 use Hent\Databean\LookupTool;
+use Hent\Databeans;
+use Hent\Keys;
 use Hent\Query\QueryBuilder;
 use Hent\Range\Range;
 use PDO;
@@ -235,6 +237,9 @@ class Node implements IndexedSortedMapStorageNode {
 		if(count($databeans) === 0){
 			return;
 		}
+		$keys = Databeans::getKeys($databeans);
+		$presentDatabeans = $this->getMulti($keys);
+
 		$pQuery = $this->builder->getInsertMulti($databeans);
 		$st = $this->co->prepare($pQuery->getSql());
 		$st->execute($pQuery->getData());

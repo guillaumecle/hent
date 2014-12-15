@@ -139,4 +139,20 @@ class Test extends PHPUnit_Framework_TestCase {
 		self::$mr->exampleNode->delete($key);
 	}
 
+	public function testPutMulti() {
+		$nb = 100;
+		$user = 'me';
+		$word = 'degemer';
+		/**
+		 * @var Example[] $examples
+		 */
+		$examples = [];
+		for ($id = 0; $id < $nb; $id++) {
+			$examples[] = new Example(new ExampleKey($id, $user), $word . $id, new DateTime());
+		}
+		self::$mr->exampleNode->putMulti($examples);
+		$examples[$nb - 1]->setVal('kenavo');
+		self::$mr->exampleNode->putMulti($examples);
+		self::$mr->exampleNode->deleteMulti(Databeans::getKeys($examples));
+	}
 }
