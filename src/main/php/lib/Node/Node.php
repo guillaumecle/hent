@@ -7,7 +7,6 @@ use Hent\Databean\Key;
 use Hent\Databean\Lookup;
 use Hent\Databean\LookupTool;
 use Hent\Databeans;
-use Hent\Keys;
 use Hent\Query\QueryBuilder;
 use Hent\Range\Range;
 use PDO;
@@ -209,7 +208,7 @@ class Node implements IndexedSortedMapStorageNode {
 		$indexNames = $this->getIndexNames();
 		$indexName = LookupTool::getIndexName($lookup);
 		if (!in_array($indexName, $indexNames)) {
-			throw new Exception('The lookup "' . $indexName . '" is not register as an index for the Databean ' . get_class($this->getDatabean()));
+			throw new Exception('The lookup "' . $indexName . '" is not register as an index for the databean ' . get_class($this->getDatabean()));
 		}
 	}
 
@@ -238,11 +237,29 @@ class Node implements IndexedSortedMapStorageNode {
 			return;
 		}
 		$keys = Databeans::getKeys($databeans);
-		$presentDatabeans = $this->getMulti($keys);
+		$presentKeys = Databeans::getKeys($this->getMulti($keys));
+		$forUpdate = [];
+		$forInsert = [];
+		foreach ($databeans as $arrayKey => $databean) {
+			if(in_array($databean->getKey(), $presentKeys)) {
+				$forUpdate[] = $databean;
+			} else {
+				$forInsert[] = $databean;
+			}
+		}
 
-		$pQuery = $this->builder->getInsertMulti($databeans);
-		$st = $this->co->prepare($pQuery->getSql());
-		$st->execute($pQuery->getData());
+		$this->co->beginTransaction();
+		if(count($forInsert) > 0) {
+			$pQuery = $this->builder->getInsertMulti($forInsert);
+			$st = $this->co->prepare($pQuery->getSql());
+			$st->execute($pQuery->getData());
+		}
+		foreach ($forUpdate as $databean) {
+			$pQuery = $this->builder->getUpdate($databean);
+			$st = $this->co->prepare($pQuery->getSql());
+			$st->execute($pQuery->getData());
+		}
+		$this->co->commit();
 	}
 
 	public function getMulti($keys) {

@@ -85,7 +85,7 @@ class QueryBuilder {
 	 * @param $databean Databean
 	 * @return PreparedQuery
 	 */
-	public function getUpdate($databean) {// TODO make this for multiple
+	public function getUpdate($databean) {
 		$sql = 'update ' . $this->tableName . ' set ';
 		$iterator = new CachingIterator(new ArrayIterator($databean->getFields()));
 		$class = new ReflectionClass(get_class($databean));
@@ -102,8 +102,8 @@ class QueryBuilder {
 				$sql .= ', ';
 			}
 		}
-		$where = $this->getWhereClause($databean->getKey());
-		return new PreparedQuery(array_merge($params, $where->getData()), $sql . $where->getSql());
+		$conjunction = $this->getConjunction($databean->getKey());
+		return new PreparedQuery(array_merge($params, $conjunction->getData()), $sql . 'where ' . $conjunction->getSql());
 	}
 
 	/**
@@ -126,17 +126,6 @@ class QueryBuilder {
 		$sql = 'select * from ' . $this->tableName . ' where ';
 		$disjunction = $this->getDisjunction($keys);
 		return new PreparedQuery($disjunction->getData(), $sql . $disjunction->getSql());
-	}
-
-	/**
-	 * @deprecated
-	 * @param $fieldable Fieldable
-	 * @return PreparedQuery
-	 */
-	private function getWhereClause($fieldable) {
-		$sql = ' where ';
-		$conjunction = $this->getConjunction($fieldable);
-		return new PreparedQuery($conjunction->getData(), $sql . $conjunction->getSql());
 	}
 
 	// **************** SQL query utils **************** //
