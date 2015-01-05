@@ -8,4 +8,3 @@ abstract class BaseLookup implements Lookup {
 	}
 
 }
- 
